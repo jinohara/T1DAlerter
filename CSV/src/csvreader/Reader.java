@@ -13,7 +13,7 @@ public class Reader {
 	    {
 		 
 		 	//Create a Twilio Object
-		 	Twilio trial = new Twilio();
+		 	Twilio trial = new Twilio(60, 180);
 		 
 	        //Get scanner instance
 	        Scanner scanner = new Scanner(new File("//Users//abhimanyumuchhal//Desktop//Mich-Freshman//Research//data.csv"));

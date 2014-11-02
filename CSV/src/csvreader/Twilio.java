@@ -12,11 +12,19 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class Twilio {
 
-	  // Find your Account Sid and Token at twilio.com/user/account
+	 private int low;
+	 private int high;
 	 private static final String ACCOUNT_SID = "AC781d1a15b57b265850465913c830bfa5"; 
 	 private static final String AUTH_TOKEN = "6060950865885af435f07f6d8e451e86"; 
 
-	  
+	 
+	 public Twilio(int low, int high){
+		 this.high = high;
+		 this.low = low;
+		 
+	 } 
+	 
+	 
 	  public void sendMessage(int val) throws TwilioRestException{
 		  
 		  String toSend = message(val);
@@ -41,10 +49,10 @@ public class Twilio {
 	  
 	  private String message(int val){
 		  
-		  if( val < 120)
+		  if( val < low)
 			  return " is too high";
 		  
-		  else if(val > 240)
+		  else if(val > high)
 			  return " is too low";
 		  
 		  else
