@@ -50,10 +50,10 @@ public class Twilio {
 	  private String message(int val){
 		  
 		  if( val < low)
-			  return " is too high";
+			  return " is too low";
 		  
 		  else if(val > high)
-			  return " is too low";
+			  return " is too high";
 		  
 		  else
 			  return "";
