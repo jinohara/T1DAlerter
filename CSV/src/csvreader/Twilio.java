@@ -12,25 +12,19 @@ import org.apache.http.message.BasicNameValuePair;
 
 public class Twilio {
 
-	//default age
-	 private int age = 5;
-	 private boolean mealTime = false;
-	 private boolean bedTime = false;
 	 private static final String ACCOUNT_SID = "AC781d1a15b57b265850465913c830bfa5"; 
 	 private static final String AUTH_TOKEN = "6060950865885af435f07f6d8e451e86"; 
-
-	 public Twilio (){
-		 
-	 }
+	 private Algorithm diabetes;
 	 
-	 public Twilio(int age){
-		 this.age = age; 
-	 } 
+	 public Twilio (){
+		 diabetes = new Algorithm(); 
+	 }
 	 
 	 
 	  public void sendMessage(int val) throws TwilioRestException{
 		  
-		  String toSend = createMessage(val);
+		  
+		  String toSend = diabetes.createMessage(val);
 		  TwilioRestClient client = new TwilioRestClient(ACCOUNT_SID, AUTH_TOKEN);
 			 
 		  if(!toSend.equals("")){
@@ -49,71 +43,7 @@ public class Twilio {
 		  }    
 	  }
 	  
-	  private String createMessage(int val){
-		  
-		  if(val < generateRange(val, true))
-			  return " BCG is too low";
-		  else if (val < generateRange(val, false))
-			  return " BCG is too high";
-		  
-		  return "";
-	  }
-	  
-	  private int generateRange(int value, boolean low){
-		  //what should the values be when it's not bedtime or sleeptime
-		  //algorithm gathered off of BASIC1.ppt
-		  //LOW VALUES
-		  if(low){
-			  if(mealTime){
-				  if(age < 5)
-					  return 80;
-				  else
-					  return 70;
-			  }
-			  else if(bedTime){
-				  if(age < 5)
-					  return 150;
-				  else if(age >= 5 && age <=11 )
-					  return 120;
-				  else
-					  return 100;
-			  }
-			  
-			  else{
-				  if(age < 5)
-					  return 80;
-				  else if(age >= 5 && age <=11 )
-					  return 100;
-				  else
-					  return 120;  
-			  }  
-		  }
-		  
-		  //HIGH Values in Range
-		  else {
-				
-			if(mealTime){
-			  if(age < 5)
-				  return 200;
-			  else if(age >= 5 && age <=11 )
-				  return 180;
-			  else
-				  return 150;
-			}
-			  // no need for bedtime high as there is only one given value
-			  // question so what will the range be then??
-			  
-			  else{
-				  
-				  if(age < 5)
-					  return 180;
-				  else if(age >= 5 && age <=11 )
-					  return 135;
-				  else
-					  return 100;
-				  
-			  }
-			}
-	  }
+	  //change to include slope
+
 	  
 }
