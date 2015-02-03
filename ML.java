@@ -28,14 +28,22 @@ public class ML
             position = wholeFile.indexOf("dateString", position+1);
         }
         
-        DexComReading garbage = new DexComReading(0,"empty");
+        DexComReading garbage = new DexComReading(0,"empty", 0);
         Vector<DexComReading> dexReadings = new Vector<>();
         for(int idx : dateTimeIdxs)
         {
             int sgvVal = garbage.strToSgvVal(wholeFile, idx);
             String slope = garbage.strToDirection(wholeFile, idx);
-            DexComReading curReading = new DexComReading(sgvVal, slope);
-            dexReadings.add(curReading);
+            try
+            {
+                int time = garbage.strToTime(wholeFile, idx);
+                DexComReading curReading = new DexComReading(sgvVal, slope, time);
+                dexReadings.add(curReading);
+            }
+            catch(NumberFormatException e)
+            {
+                System.out.println("date format is different");
+            }
         }
         Vector<Boolean> dangerListHigh = new Vector<>();
         Vector<Boolean> dangerListLow = new Vector<>(); 
@@ -62,14 +70,15 @@ public class ML
                 dangerListHigh.add(false);
             }
         }
-        double [][] sets10 = new double[dangerListHigh.size()][10];
+        double [][] sets10 = new double[dangerListHigh.size()][11];
         for(int i=10; i<=dexReadings.size()-6;++i)
         {
-            double [] set10 = new double[10];
+            double [] set10 = new double[11];
             for(int j=0; j<10; ++j)
             {
                 set10[9-j]=dexReadings.get(i-j).getDoubleSgv();
             }
+            set10[10]=dexReadings.get(i).getTime();
             sets10[i-10]=set10;
         }
 
