@@ -9,13 +9,18 @@ import net.sf.javaml.classification.evaluation.PerformanceMeasure;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.classification.AbstractClassifier;
-public class ML
+class SVMMethods
 {
-    public static void main(String[] args) throws IOException, FileNotFoundException
+    public SVMMethods()
+    {
+    }
+
+    public Vector<Dataset> produceDataSets(String fileName, int tooHigh, int tooLow) 
+        throws IOException, FileNotFoundException
     {
         FileReader fr;
         String wholeFile;
-        fr = new FileReader("sgvNums");
+        fr = new FileReader(fileName);
         
         BufferedReader textReader = new BufferedReader(fr);
         wholeFile = textReader.readLine();
@@ -54,17 +59,17 @@ public class ML
         }
         for(int i=10; i<=dexReadings.size()-6;++i)
         {
-            if(dexReadings.get(i+5).getSgv()>160)
+            if(dexReadings.get(i+5).getSgv()>tooHigh)
             {
                 dangerListHigh.add(true);
                 dangerListLow.add(false);
             }
-            else if(dexReadings.get(i+5).getSgv()>100)
+            else if(dexReadings.get(i+5).getSgv()>tooLow)
             {
                 dangerListHigh.add(false);
                 dangerListLow.add(false);
             }
-            else if(dexReadings.get(i+5).getSgv()<100)
+            else if(dexReadings.get(i+5).getSgv()<tooLow)
             {
                 dangerListLow.add(true);
                 dangerListHigh.add(false);
@@ -84,7 +89,7 @@ public class ML
 
         Dataset dataHigh = new DefaultDataset();
         Dataset dataLow = new DefaultDataset();
-        for(int i=0; i<=sets10.length-201; ++i)
+        for(int i=0; i<sets10.length; ++i)
         {
             Instance instanceWClassValueHigh=new DenseInstance(sets10[i], 
                     dangerListHigh.get(i));
@@ -94,27 +99,29 @@ public class ML
             dataLow.add(instanceWClassValueLow);
         }
         
-        Dataset dataTestHigh = new DefaultDataset();
-        Dataset dataTestLow = new DefaultDataset();
-        for(int i=sets10.length-200; i<sets10.length; ++i)
-        {
-            Instance instanceWClassValueHigh=new DenseInstance(sets10[i], 
-                    dangerListHigh.get(i));
-            Instance instanceWClassValueLow = new DenseInstance(sets10[i],
-                    dangerListLow.get(i));
-            dataTestLow.add(instanceWClassValueLow);
-            dataTestHigh.add(instanceWClassValueHigh);
-        }
-
+        Vector<Dataset> dataSets = new Vector<>();
+        dataSets.add(dataHigh);
+        dataSets.add(dataLow);
+        return dataSets;
+    }
+    public Vector<Classifier> trainSVM(Dataset dataHigh, Dataset dataLow)
+    {
         Classifier svmHigh = new LibSVM();
         svmHigh.buildClassifier(dataHigh);
         Classifier svmLow = new LibSVM();
-        svmLow.buildClassifier(dataLow); 
+        svmLow.buildClassifier(dataLow);
         
-        Map<Object, PerformanceMeasure> pmHigh = EvaluateDataset.testDataset(svmHigh,
-                dataTestHigh);
-        Map<Object, PerformanceMeasure> pmLow = EvaluateDataset.testDataset(svmLow, 
-                dataTestLow);
+        Vector<Classifier> toReturn = new Vector<>();
+        toReturn.add(svmHigh);
+        toReturn.add(svmLow);
+        return toReturn;
+    }
+    public void testSVMs(Vector<Classifier> SVMsToTest, Dataset dataHigh, Dataset dataLow)
+    { 
+        Map<Object, PerformanceMeasure> pmHigh = EvaluateDataset.testDataset(SVMsToTest.get(0),
+                dataHigh);
+        Map<Object, PerformanceMeasure> pmLow = EvaluateDataset.testDataset(SVMsToTest.get(1), 
+                dataLow);
         for(Object o : pmHigh.keySet())
         {
             System.out.println(o + ": " + pmHigh.get(o).tp + " "+ pmHigh.get(o).fp);
@@ -126,4 +133,8 @@ public class ML
             System.out.println("f measure: "+ pmLow.get(o).getFMeasure());
         }
     }
+    public Object classify(Classifier svm, Instance aRead)
+    {
+        return svm.classify(aRead);
+    } 
 }
