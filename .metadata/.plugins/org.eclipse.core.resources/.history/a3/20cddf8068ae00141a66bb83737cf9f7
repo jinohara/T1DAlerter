@@ -28,8 +28,6 @@ public class DatabaseActivity extends Activity implements MyResultReceiver.Recei
 
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_database);
-        
 		mReceiver = new MyResultReceiver(new Handler());
 		mReceiver.setReceiver(mReceiver);
 		final Intent intent = new Intent(Intent.ACTION_SYNC, null, this,
@@ -40,21 +38,8 @@ public class DatabaseActivity extends Activity implements MyResultReceiver.Recei
 	}
 
 	public void onPause() {
-		super.onPause();
 		mReceiver.setReceiver(null); // clear receiver so no leaks.
 	}
-	
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        // your stuff or nothing
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // your stuff or nothing
-    }
 
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {

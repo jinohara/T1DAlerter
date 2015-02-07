@@ -37,6 +37,20 @@ public class MainActivity extends Activity {
         });
         
     }
+    
+    @Override
+    protected void onStop() {
+        Log.w("", "App stopped");
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.w("", "App destoryed");
+
+        super.onDestroy();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

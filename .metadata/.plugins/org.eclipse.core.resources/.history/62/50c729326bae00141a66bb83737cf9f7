@@ -19,7 +19,6 @@
          <service
                 android:name="QueryService">
  		</service>
- 		<receiver  android:process=":remote" android:name="Alarm"></receiver>
         <activity
             android:name="com.example.research.MainActivity"
             android:label="@string/app_name" >

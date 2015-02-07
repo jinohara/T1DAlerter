@@ -40,7 +40,6 @@ public class DatabaseActivity extends Activity implements MyResultReceiver.Recei
 	}
 
 	public void onPause() {
-		super.onPause();
 		mReceiver.setReceiver(null); // clear receiver so no leaks.
 	}
 	

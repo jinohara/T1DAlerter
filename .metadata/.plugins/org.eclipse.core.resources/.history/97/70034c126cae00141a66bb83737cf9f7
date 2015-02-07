@@ -37,6 +37,17 @@ public class MainActivity extends Activity {
         });
         
     }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // your stuff or nothing
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // your stuff or nothing
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
