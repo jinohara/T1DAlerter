@@ -12,7 +12,7 @@ public class MyResultReceiver extends ResultReceiver {
 
 	private Vector<String> last11;
 	private Vector<Classifier> SVMs;
-	private SVMMethods garbage;
+	private SVMMethods ml;
 
 	public interface Receiver {
 		public void onReceiveResult(int resultCode, Bundle resultData);
@@ -22,7 +22,7 @@ public class MyResultReceiver extends ResultReceiver {
 		super(handler);
 		last11 = new Vector<String>();
 		SVMs = new Vector<Classifier>();
-		garbage = new SVMMethods();
+		ml = new SVMMethods();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -35,16 +35,16 @@ public class MyResultReceiver extends ResultReceiver {
 	protected void onReceiveResult(int resultCode, Bundle resultData) {
 		if (mReceiver != null) {
 			
-			ArrayList<String> temp;
-			temp = resultData.getStringArrayList("results");
+			Vector temp = new Vector<String>(resultData.getStringArrayList("results"));  
 			//TRAIN
 			if (resultCode == 1) {
 				temp = null;
 			}
 			//TRAIN / RETRAIN
 			else if (resultCode == 2) {
-				temp = null;
-
+				//ml.produceDataSets(fileName, 300, 50);
+				
+				
 			}
 
 		}
