@@ -34,8 +34,10 @@ public class MyResultReceiver extends ResultReceiver {
 
 	protected void onReceiveResult(int resultCode, Bundle resultData) {
 		if (mReceiver != null) {
+			
 			ArrayList<String> temp;
 			temp = resultData.getStringArrayList("results");
+			//TRAIN
 			if (resultCode == 1) {
 				temp = null;
 			}
