@@ -23,21 +23,26 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class DatabaseActivity extends Activity implements MyResultReceiver.Receiver  {
-
-	public MyResultReceiver mReceiver;
+	
+	private int type = 0;
+	private MyResultReceiver mReceiver;
 
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database);
+        
+        this.type = getIntent().getIntExtra("type", 0);
         
 		mReceiver = new MyResultReceiver(new Handler());
 		mReceiver.setReceiver(mReceiver);
 		final Intent intent = new Intent(Intent.ACTION_SYNC, null, this,
 				QueryService.class);
 		intent.putExtra("receiver", mReceiver);
-		intent.putExtra("command", "query");
+		intent.putExtra("type", type);
 		startService(intent);
 	}
+	
+
 
 	public void onPause() {
 		super.onPause();
@@ -59,16 +64,14 @@ public class DatabaseActivity extends Activity implements MyResultReceiver.Recei
 	public void onReceiveResult(int resultCode, Bundle resultData) {
 		switch (resultCode) {
 		case 0:
-			// RUNNING
+			// DO NOTHING
 			break;
 		case 1:
 			List results = resultData.getParcelable("results");
-			// do something interesting
-			// hide progress
-			// FINISHED
+			// Normal Run
 			break;
 		case 2:
-			// handle the error;
+			// Train
 			break;
 		}
 	}

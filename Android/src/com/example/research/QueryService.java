@@ -16,9 +16,11 @@ public class QueryService extends IntentService {
 
 	private int count = 1;
 	private String urlString;
+	private int type;
 
 	public QueryService() {
 		super("MongoLabService");
+		this.type = 1;
 		this.urlString = "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a";
 		// TODO Auto-generated constructor stub
 	}
@@ -32,6 +34,11 @@ public class QueryService extends IntentService {
 	public void setCount(int count) {
 		this.count = count;
 	}
+	
+	public void setType(int type){
+		this.type = type;
+		
+	}
 
 	protected void onHandleIntent(Intent intent) {
 		; // ADD INTENT
@@ -39,11 +46,11 @@ public class QueryService extends IntentService {
 		String line;
 
 		final ResultReceiver receiver = intent.getParcelableExtra("receiver");
-		String command = intent.getStringExtra("command");
+		int type = intent.getIntExtra("type", 0);
 		Bundle b = new Bundle();
-		  receiver.send(0, Bundle.EMPTY);
+		  receiver.send(type, Bundle.EMPTY);
 		  
-		if (command.equals("query")) {
+		if (type > 0) {
 			try {
 				HttpURLConnection urlConnection = (HttpURLConnection) new URL(
 						urlString).openConnection();
@@ -59,7 +66,7 @@ public class QueryService extends IntentService {
 				}
 				
 				  b.putStringArrayList("results", result);
-	                receiver.send(1, b);
+	                receiver.send(type, b);
 
 			} catch (Exception e) {
 				Log.d("issue", e.getMessage());
