@@ -1,6 +1,5 @@
 package com.example.research;
 
-import java.util.ArrayList;
 import java.util.Vector;
 
 import net.sf.javaml.classification.Classifier;
@@ -34,14 +33,12 @@ public class MyResultReceiver extends ResultReceiver {
 
 	protected void onReceiveResult(int resultCode, Bundle resultData) {
 		if (mReceiver != null) {
-			ArrayList<String> temp;
-			temp = resultData.getStringArrayList("results");
+			//NORMAL CASE
 			if (resultCode == 1) {
-				temp = null;
+			
 			}
 			//TRAIN / RETRAIN
 			else if (resultCode == 2) {
-				temp = null;
 
 			}
 

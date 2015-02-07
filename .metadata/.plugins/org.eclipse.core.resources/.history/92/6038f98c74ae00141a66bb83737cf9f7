@@ -17,6 +17,7 @@ public class QueryService extends IntentService {
 	private String urlString;
 	public QueryService() {
 		super("MongoLabService");
+		this.type = 1;
 		this.urlString = "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a";
 		// TODO Auto-generated constructor stub
 	}

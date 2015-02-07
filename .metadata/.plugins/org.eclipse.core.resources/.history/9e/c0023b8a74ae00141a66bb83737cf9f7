@@ -15,8 +15,11 @@ import android.util.Log;
 public class QueryService extends IntentService {
 
 	private String urlString;
+	private int type;
+
 	public QueryService() {
 		super("MongoLabService");
+		this.type = 1;
 		this.urlString = "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a";
 		// TODO Auto-generated constructor stub
 	}
@@ -27,7 +30,10 @@ public class QueryService extends IntentService {
 		// TODO Auto-generated constructor stub
 	}
 
+	public void setType(int type) {
+		this.type = type;
 
+	}
 
 	protected void onHandleIntent(Intent intent) {
 		int count;

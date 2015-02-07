@@ -15,8 +15,11 @@ import android.util.Log;
 public class QueryService extends IntentService {
 
 	private String urlString;
+	private int type;
+
 	public QueryService() {
 		super("MongoLabService");
+		this.type = 1;
 		this.urlString = "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a";
 		// TODO Auto-generated constructor stub
 	}
@@ -27,7 +30,11 @@ public class QueryService extends IntentService {
 		// TODO Auto-generated constructor stub
 	}
 
-
+	
+	public void setType(int type){
+		this.type = type;
+		
+	}
 
 	protected void onHandleIntent(Intent intent) {
 		int count;
@@ -37,9 +44,9 @@ public class QueryService extends IntentService {
 		final ResultReceiver receiver = intent.getParcelableExtra("receiver");
 		int type = intent.getIntExtra("type", 0);
 		Bundle b = new Bundle();
-		// receiver.send(type, Bundle.EMPTY);
-
-		if (type > 0) {
+		  //receiver.send(type, Bundle.EMPTY);
+		  
+		if (type > 0) {		
 			try {
 				HttpURLConnection urlConnection = (HttpURLConnection) new URL(
 						urlString).openConnection();
@@ -48,22 +55,23 @@ public class QueryService extends IntentService {
 						urlConnection.getInputStream()));
 				database.useDelimiter("\"_id\"");
 				line = database.next();
-
-				if (type == 2) {
+				
+				if(type == 2){
 					for (int i = 0; database.hasNext(); i++) {
 						line = database.next();
 						result.add(line);
 					}
-
-				} else {
-
-					for (int i = 0; i < 1 && database.hasNext(); i++) {
-						line = database.next();
-						result.add(line);
-					}
+					
 				}
-				b.putStringArrayList("results", result);
-				receiver.send(type, b);
+				
+				
+				for (int i = 0; i < 1 && database.hasNext(); i++) {
+					line = database.next();
+					result.add(line);
+				}
+				
+				  b.putStringArrayList("results", result);
+	                receiver.send(type, b);
 
 			} catch (Exception e) {
 				Log.d("issue", e.getMessage());
