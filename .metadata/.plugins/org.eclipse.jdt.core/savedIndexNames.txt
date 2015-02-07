@@ -1,8 +1,3 @@
 INDEX VERSION 1.126+/Users/abhimanyumuchhal/git/UROP2014-2015/.metadata/.plugins/org.eclipse.jdt.core
-3243982010.index
-597216752.index
-2706924106.index
-2502720392.index
-4091116000.index
-2233073500.index
 1041119246.index
+2233073500.index
