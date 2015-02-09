@@ -1,5 +1,4 @@
 package com.example.research;
-
 import java.io.*;
 import java.util.*;
 import net.sf.javaml.core.DenseInstance;
@@ -17,90 +16,84 @@ class SVMMethods
     {
     }
 
-    public Vector<Dataset> produceDataSets(String fileName, int tooHigh, int tooLow) 
-        throws IOException, FileNotFoundException
+    public DexComReading produceReading(String readStr)
     {
-        FileReader fr;
-        String wholeFile;
-        fr = new FileReader(fileName);
-        
-        BufferedReader textReader = new BufferedReader(fr);
-        wholeFile = textReader.readLine();
-        
-        Vector<Integer> dateTimeIdxs = new Vector<Integer>();
-        int position = wholeFile.indexOf("dateString");
-        while(position >= 0)
+        DexComReading garbage = new DexComReading(0, "empty", 0);
+        int position = readStr.indexOf("dateString");
+        int sgvVal = garbage.strToSgvVal(readStr, position);
+        String slope = garbage.strToDirection(readStr, position);
+        try
         {
-            dateTimeIdxs.add(position);
-            position = wholeFile.indexOf("dateString", position+1);
+            int time = garbage.strToTime(readStr, position);
+            DexComReading reading = new DexComReading(sgvVal, slope, time);
+            return reading;
         }
-        
+        catch(NumberFormatException e)
+        {
+            System.out.println("date format is different");
+        }
+        System.out.println("should never get here");
+        System.exit(1);
+        return garbage;
+    }
+
+    public Vector<Dataset> produceDataSets(Vector<String> all, int tooHigh, int tooLow)
+    {
         DexComReading garbage = new DexComReading(0,"empty", 0);
         Vector<DexComReading> dexReadings = new Vector<DexComReading>();
-        for(int idx : dateTimeIdxs)
+        for(String curString : all)
         {
-            int sgvVal = garbage.strToSgvVal(wholeFile, idx);
-            String slope = garbage.strToDirection(wholeFile, idx);
-            try
-            {
-                int time = garbage.strToTime(wholeFile, idx);
-                DexComReading curReading = new DexComReading(sgvVal, slope, time);
-                dexReadings.add(curReading);
-            }
-            catch(NumberFormatException e)
-            {
-                System.out.println("date format is different");
-            }
+            DexComReading newRead = produceReading(curString);
+            dexReadings.add(newRead);
         }
         Vector<Boolean> dangerListHigh = new Vector<Boolean>();
         Vector<Boolean> dangerListLow = new Vector<Boolean>(); 
-        for(int i=0; i<10; ++i)
+        for(int i=0; i<12; ++i)
         {
             dangerListHigh.add(false);
             dangerListLow.add(false);
         }
-        for(int i=10; i<=dexReadings.size()-6;++i)
-        {
-            if(dexReadings.get(i+5).getSgv()>tooHigh)
+        for(int i=12; i<dexReadings.size()-6; ++i)
+        { 
+            if(dexReadings.get(i+6).getSgv()>tooHigh)
             {
                 dangerListHigh.add(true);
                 dangerListLow.add(false);
             }
-            else if(dexReadings.get(i+5).getSgv()>tooLow)
+            else if(dexReadings.get(i+6).getSgv()>tooLow)
             {
                 dangerListHigh.add(false);
                 dangerListLow.add(false);
             }
-            else if(dexReadings.get(i+5).getSgv()<tooLow)
+            else if(dexReadings.get(i+6).getSgv()<tooLow)
             {
                 dangerListLow.add(true);
                 dangerListHigh.add(false);
             }
         }
-        double [][] sets10 = new double[dangerListHigh.size()][11];
-        for(int i=10; i<=dexReadings.size()-6;++i)
+        double [][] sets13 = new double[dangerListHigh.size()][13];
+        for(int i=12; i<dexReadings.size()-6;++i)
         {
-            double [] set10 = new double[11];
-            for(int j=0; j<10; ++j)
+            double [] set13 = new double[13];
+            for(int j=0; j<12; ++j)
             {
-                set10[9-j]=dexReadings.get(i-j).getDoubleSgv();
+                set13[11-j]=dexReadings.get(i-j).getDoubleSgv();
             }
-            set10[10]=dexReadings.get(i).getTime();
-            sets10[i-10]=set10;
+            set13[12]=dexReadings.get(i).getTime();
+            sets13[i-12]=set13;
         }
 
         Dataset dataHigh = new DefaultDataset();
         Dataset dataLow = new DefaultDataset();
-        for(int i=0; i<sets10.length; ++i)
+        for(int i=0; i<sets13.length; ++i)
         {
-            Instance instanceWClassValueHigh=new DenseInstance(sets10[i], 
+            Instance instanceWClassValueHigh=new DenseInstance(sets13[i], 
                     dangerListHigh.get(i));
-            Instance instanceWClassValueLow = new DenseInstance(sets10[i], 
+            Instance instanceWClassValueLow = new DenseInstance(sets13[i], 
                     dangerListLow.get(i));
             dataHigh.add(instanceWClassValueHigh);
             dataLow.add(instanceWClassValueLow);
         }
-        
         Vector<Dataset> dataSets = new Vector<Dataset>();
         dataSets.add(dataHigh);
         dataSets.add(dataLow);
@@ -135,6 +128,21 @@ class SVMMethods
             System.out.println("f measure: "+ pmLow.get(o).getFMeasure());
         }
     }
+
+    //!!THE LAST 11 should be in order from 5 minutes back to 55 minutes back
+    Instance makeInstance(Vector<String> last11, String mostRecent)
+    {
+        double [] set13 = new double[13];
+        for(int i=0; i<11; --i)
+        {
+            dexComReading tempReading = produceReading(last11.get(i));
+            set13[i+1]=tempReading.getDoubleSgv();
+        }
+        dexComReading tempReading = produceReading(mostRecent);
+        set13[0]=tempReading.getDoubleSgv(); 
+        set13[12]=tempReading.getTime();
+    }
+
     public Object classify(Classifier svm, Instance aRead)
     {
         return svm.classify(aRead);
