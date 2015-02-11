@@ -141,6 +141,7 @@ class SVMMethods
         dexComReading tempReading = produceReading(mostRecent);
         set13[0]=tempReading.getDoubleSgv(); 
         set13[12]=tempReading.getTime();
+
     }
 
     public Object classify(Classifier svm, Instance aRead)
