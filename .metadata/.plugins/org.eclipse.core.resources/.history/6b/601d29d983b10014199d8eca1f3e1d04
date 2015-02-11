@@ -30,6 +30,7 @@ public class QueryService extends IntentService {
 
 
 	protected void onHandleIntent(Intent intent) {
+		int count;
 		ArrayList<String> result = new ArrayList<String>();
 		String line;
 
@@ -47,15 +48,14 @@ public class QueryService extends IntentService {
 						urlConnection.getInputStream()));
 				database.useDelimiter("\"_id\"");
 				line = database.next();
-				//TRAIN / RETRAIN
+
 				if (type == 2) {
 					for (int i = 0; database.hasNext(); i++) {
 						line = database.next();
 						result.add(line);
 					}
-				//NORMAL
-				} 
-				else {
+
+				} else {
 
 					for (int i = 0; i < 1 && database.hasNext(); i++) {
 						line = database.next();
