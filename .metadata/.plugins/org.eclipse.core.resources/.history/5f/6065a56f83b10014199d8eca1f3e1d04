@@ -1,7 +1,6 @@
 package com.example.research;
 import java.io.*;
 import java.util.*;
-
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 import net.sf.javaml.classification.Classifier;
@@ -136,14 +135,12 @@ class SVMMethods
         double [] set13 = new double[13];
         for(int i=0; i<11; --i)
         {
-            DexComReading tempReading = produceReading(last11.get(i));
+            dexComReading tempReading = produceReading(last11.get(i));
             set13[i+1]=tempReading.getDoubleSgv();
         }
-        DexComReading tempReading = produceReading(mostRecent);
+        dexComReading tempReading = produceReading(mostRecent);
         set13[0]=tempReading.getDoubleSgv(); 
         set13[12]=tempReading.getTime();
-        Instance mostRecentInst = new DenseInstance(set13, "false");
-        return mostRecentInst;
     }
 
     public Object classify(Classifier svm, Instance aRead)

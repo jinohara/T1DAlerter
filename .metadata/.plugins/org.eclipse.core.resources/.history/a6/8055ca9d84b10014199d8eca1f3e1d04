@@ -48,7 +48,8 @@ public class MyResultReceiver extends ResultReceiver {
                 Object classificationHigh = methodObject.classify(SVMs.get(0), toClassify);
                 Object classificationLow = methodObject.classify(SVMs.get(1), toClassify);
                 //increment the last11
-                for(int i=10; i>0; --i) 
+                for(int i=11; i>=0; --i)
+                
                 {
                 	last11.set(i, last11.get(i-1));
                 }
@@ -58,8 +59,10 @@ public class MyResultReceiver extends ResultReceiver {
 			
 			else if (resultCode == 2) {
 				for(int i =0; i < 11; i++){
-					last11.set(i,temp.get(0));	
+					last11.set(i,temp.get(0));
+					
 				}
+				
 				
 				Vector<Dataset> newDatasets = methodObject.produceDataSets(temp, 80, 160);
 			    SVMs = methodObject.trainSVM(newDatasets.get(0), newDatasets.get(1));	

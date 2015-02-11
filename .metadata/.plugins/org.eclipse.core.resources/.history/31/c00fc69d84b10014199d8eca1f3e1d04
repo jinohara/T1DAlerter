@@ -142,8 +142,6 @@ class SVMMethods
         DexComReading tempReading = produceReading(mostRecent);
         set13[0]=tempReading.getDoubleSgv(); 
         set13[12]=tempReading.getTime();
-        Instance mostRecentInst = new DenseInstance(set13, "false");
-        return mostRecentInst;
     }
 
     public Object classify(Classifier svm, Instance aRead)

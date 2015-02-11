@@ -36,19 +36,20 @@ public class MyResultReceiver extends ResultReceiver {
 	protected void onReceiveResult(int resultCode, Bundle resultData) {
 		if (mReceiver != null) {
 			
-			Vector<String> temp = new Vector<String>(resultData.getStringArrayList("results"));  
+			Vector temp = new Vector<String>(resultData.getStringArrayList("results"));  
 			//CLASSIFY IF 1, no training here, the vector here should contain 1 element
             //at index 0, the most recent reading
 			if (resultCode == 1) {
 				//
 				//POTENTIAL ERROOR HERE!!!!!!!!!!!!!
-			    Instance toClassify = methodObject.makeInstance(last11, temp.get(0));
+			    Instance toClassify = methodObject.makeInstance(last11, (String)temp.get(0));
                 //I'm not sure what you want to do with these values, 
                 //they are either true or false, an alert would happen if one returned true
                 Object classificationHigh = methodObject.classify(SVMs.get(0), toClassify);
                 Object classificationLow = methodObject.classify(SVMs.get(1), toClassify);
                 //increment the last11
-                for(int i=10; i>0; --i) 
+                for(int i=11; i>=0; --i)
+                
                 {
                 	last11.set(i, last11.get(i-1));
                 }
@@ -57,9 +58,8 @@ public class MyResultReceiver extends ResultReceiver {
 			//TRAIN / RETRAIN if 2
 			
 			else if (resultCode == 2) {
-				for(int i =0; i < 11; i++){
-					last11.set(i,temp.get(0));	
-				}
+				
+				
 				
 				Vector<Dataset> newDatasets = methodObject.produceDataSets(temp, 80, 160);
 			    SVMs = methodObject.trainSVM(newDatasets.get(0), newDatasets.get(1));	
