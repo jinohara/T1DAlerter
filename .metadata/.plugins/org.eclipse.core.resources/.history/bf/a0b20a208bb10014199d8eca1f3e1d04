@@ -23,18 +23,21 @@ class SVMMethods
         int position = readStr.indexOf("dateString");
         int sgvVal = garbage.strToSgvVal(readStr, position);
         String slope = garbage.strToDirection(readStr, position);
-        try
-        {
+        /*try*/
+        //{
             int time = garbage.strToTime(readStr, position);
             DexComReading reading = new DexComReading(sgvVal, slope, time);
             return reading;
-        }
+        //}
+        /*
         catch(NumberFormatException e)
         {
             System.out.println("date format is different");
         }
         System.out.println("should never get here");
+        System.exit(1);
         return garbage;
+        */
     }
 
     public Vector<Dataset> produceDataSets(Vector<String> all, int tooHigh, int tooLow)
@@ -142,10 +145,15 @@ class SVMMethods
         double [] set13 = new double[13];
         for(int i=0; i<11; --i)
         {
+        	//!!!!!!
+        	//THERE NEEDS TO BE A TRY CATCH HERE FOR BAD DATE FORMATS!!!!!!!!!!!!!!!!
+        	//!!!!!!
         	
             DexComReading tempReading = produceReading(last11.get(i));
             set13[i+1]=tempReading.getDoubleSgv();
         }
+        
+        //HERE TOO !!!!!!!!!!!!!
         
         DexComReading tempReading = produceReading(mostRecent);
         set13[0]=tempReading.getDoubleSgv(); 

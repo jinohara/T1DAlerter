@@ -8,7 +8,6 @@ import net.sf.javaml.core.Instance;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
-import android.util.Log;
 
 public class MyResultReceiver extends ResultReceiver {
 
@@ -58,18 +57,12 @@ public class MyResultReceiver extends ResultReceiver {
 			//TRAIN / RETRAIN if 2
 			
 			else if (resultCode == 2) {
-				for(int i=11; i>=0 ; --i){
-					last11.add(temp.get(i));	
+				for(int i =0; i < 11; i++){
+					last11.add(temp.get(0));	
 				}
 				
 				Vector<Dataset> newDatasets = methodObject.produceDataSets(temp, 80, 160);
-			    SVMs = methodObject.trainSVM(newDatasets.get(0), newDatasets.get(1));
-			    
-			    Instance toTest = methodObject.makeInstance(last11, temp.get(0));
-			    Log.d("data", methodObject.classify(SVMs.get(0), toTest).toString());
-			    Log.d("data", methodObject.classify(SVMs.get(1), toTest).toString());
-			    System.out.println(methodObject.classify(SVMs.get(0), toTest));
-			    System.out.println(methodObject.classify(SVMs.get(1), toTest));
+			    SVMs = methodObject.trainSVM(newDatasets.get(0), newDatasets.get(1));	
 				
 			}
 

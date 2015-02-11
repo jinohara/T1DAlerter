@@ -34,6 +34,7 @@ class SVMMethods
             System.out.println("date format is different");
         }
         System.out.println("should never get here");
+        System.exit(1);
         return garbage;
     }
 

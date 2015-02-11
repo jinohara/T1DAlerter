@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext(),3333,i,
         PendingIntent.FLAG_CANCEL_CURRENT);
         AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-        mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() , 3000, pi);
+        mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() , 300000, pi);
         first = false;
         }
         
