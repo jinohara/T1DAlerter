@@ -10,17 +10,14 @@
 
 extern char *optarg;
 extern int optind;
-extern int optopt;
-extern int opterr;
-extern int optreset;
-
-int
-getopt(int argc, char * const argv[], const char *optstring);
+extern int getopt(int argc, char * const argv[], const char *optstring);
 
 #define SOURCELEN 12	// number of BG values to consider for prediction
 #define TARGETLEN 6	// number of BG values to predict
 #define NUMBEROFNEIGHBORS 20	// use the 20 nearest neighbors to predict
 #define MAXDIAMETER 100 * (400 * 400)	// max diameter
+
+#define SQRT(n) (int) sqrt((double) n)
 
 int sourcelen = SOURCELEN;
 int targetlen = TARGETLEN;
@@ -36,6 +33,8 @@ int bgcount;			// number of BG values
 int *bgp;			// array of BG values, length bgcount
 int distveccount;		// number of target vectors
 struct distvec *distvecp;	// target vectors: array of <index, distance> pairs
+int *prediction;
+int lflag, vflag;		// run time flags
 
 // count the number of lines in the input file
 int
@@ -71,17 +70,17 @@ readbg(infile)
 	return i;
 }
 
-// calculate eucidean distance between vectors of length veclen starting at index v0 and index v1
+// calculate eucidean distance between vectors of length veclen starting at v0 and v1
 // actually returns the square
 int
 vdistance(v0, v1, veclen)
-	int v0, v1;
+	int *v0, *v1;
 	int veclen;
 {	int i, dist, sumofsquares;
 
 	sumofsquares = 0;
 	for (i = 0; i < veclen; i++) {
-		dist = bgp[v0+i] - bgp[v1+i];
+		dist = v0[i] - v1[i];
 		sumofsquares += dist * dist;
 	}
 	return sumofsquares;
@@ -104,15 +103,15 @@ printbgvector(bgindex, sourcelen, targetlen)
 	int targetlen;
 {	int i;
 
-	fprintf(stderr, "at index %d\t", bgindex);
+	printf("at index %d\t", bgindex);
 	for (i = 0; i < sourcelen; i++) 
-		fprintf(stderr, " %3d", bgp[bgindex + i]);
+		printf(" %3d", bgp[bgindex + i]);
 	if (targetlen != 0) {
-		fprintf(stderr, " |");
+		printf(" |");
 		for (i = 0; i < targetlen; i++)
-			fprintf(stderr, " %3d", bgp[bgindex + sourcelen + i]);
+			printf(" %3d", bgp[bgindex + sourcelen + i]);
 	}
-	fprintf(stderr, "\n");
+	printf("\n");
 }
 
 // calculate the diameter of the first numberofneighbors vectors
@@ -120,7 +119,7 @@ printbgvector(bgindex, sourcelen, targetlen)
 // when called with offset sourcelen and veclen targetlen, calculates diameter of target ball
 
 int
-vdiameter(thisvec, offset, veclen)
+vdiameter(offset, veclen)
 	int offset;
 	int veclen;
 {	int maxdist, i, j, ijdistance;
@@ -128,7 +127,7 @@ vdiameter(thisvec, offset, veclen)
 	maxdist = -1;
 	for (i = 0; i < numberofneighbors; i++)
 		for (j = i + 1; j < numberofneighbors; j++) {
-			ijdistance = vdistance(distvecp[i].index + offset, distvecp[j].index + offset, veclen);
+			ijdistance = vdistance(bgp + distvecp[i].index + offset, bgp + distvecp[j].index + offset, veclen);
 			if (ijdistance > maxdist)
 				maxdist = ijdistance;
 		}
@@ -146,7 +145,7 @@ debugalot(thisvec)
 		printbgvector(distvecp[i].index, sourcelen, targetlen);
 
 	for (i = 0; i < numberofneighbors; i++)
-		fprintf(stderr, "distance %d at index %d\n", (int) sqrt((double) distvecp[i].distance), distvecp[i].index);
+		printf("distance %d at index %d\n", SQRT(distvecp[i].distance), distvecp[i].index);
 }
 
 // calculate the distance from thisvec to every other vector
@@ -155,54 +154,64 @@ debugalot(thisvec)
 void
 predict(thisvec)
 	int thisvec;
-{	int i, sourcediameter, targetdiameter, sum, j;
+{	int i, j, sourcediameter, targetdiameter, sum, preddist;
 
-	for (i = 0; i < distveccount; i++) {
+	// for each vector prior to thisvec, calculate distance to thisvec
+	for (i = 0; i < thisvec; i++) {
 		distvecp[i].index = i;
-		distvecp[i].distance = vdistance(thisvec, i, sourcelen);
+		distvecp[i].distance = vdistance(bgp + thisvec, bgp + i, sourcelen);
 	}
 	
-	// don't include thisvec in nearest neighbors
-	if (thisvec < distveccount) {
-		assert(distvecp[thisvec].distance == 0);	// sanity check -- distance to self is zero
-		distvecp[thisvec].distance = MAXDIAMETER;	// not any more ha ha
-	}
+	// sort the distances to pick off the nearest ones
+	qsort(distvecp, thisvec, sizeof(struct distvec), dvcompar);
 
-	qsort(distvecp, distveccount, sizeof(struct distvec), dvcompar);
+	if (vflag)
+		debugalot(thisvec);
 
-#if 0	// for debugging
-	debugalot(thisvec);
-#endif
-
-	sourcediameter = vdiameter(thisvec, 0, sourcelen);
-	targetdiameter = vdiameter(thisvec, sourcelen, targetlen);
-
-	// index, source diameter, target diameter
-	printf("%d,%d,%d", thisvec, (int) sqrt((double) sourcediameter), (int) sqrt((double) targetdiameter));
-	// the predicted values
+	// predicted values are the average for each time slot
 	for (i = 0; i < targetlen; i++) {
 		// average the i-th target value
 		sum = 0;
 		for (j = 0; j < numberofneighbors; j++) {
 			sum += bgp[distvecp[j].index+sourcelen+i];
 		}
-		printf(",%d", sum/numberofneighbors);
+		prediction[i] = sum/numberofneighbors;
 	}
-	printf("\n");
+
+	// calculate the distance from the actual result to the predicted result
+	preddist = vdistance(prediction, bgp + thisvec, targetlen);
+
+	// calculate the diameter of the nearest neighbors and of their predictions.
+	sourcediameter = vdiameter(0, sourcelen);
+	targetdiameter = vdiameter(sourcelen, targetlen);
+
+	// index, source diameter, target diameter
+	printf("index %7d sdiam %3d tdiam %3d prediction", thisvec, SQRT(sourcediameter), SQRT(targetdiameter));
+	for (i = 0; i < targetlen; i++)
+		printf(" %3d", prediction[i]);
+	printf(" actual");
+	for (i = 0; i < targetlen; i++)
+		printf(" %3d", bgp[thisvec+sourcelen+i]);
+	printf(" distance %3d\n" , SQRT(preddist));
 }
 
 void
-usage(argv0)
+usage(argv0, severity)
 	char *argv0;
+	int severity;
 {
-	fprintf(stderr, "usage: %s [-l] [-n numberofneighbor] [-s sourcelen] [-t targetlen] file\n", argv0);
+	if (severity)
+		fprintf(stderr, "usage: %s [-lv] [-n numberofneighbor] [-s sourcelen] [-t targetlen] file\n", argv0);
+	else
+		printf("usage: %s [-lv] [-n numberofneighbor] [-s sourcelen] [-t targetlen] file\n", argv0);
+	exit(severity);
 }
 
 int
 main(argc, argv)
 	int argc;
 	char **argv;
-{	int c, i, readcount, lflag;
+{	int c, i, readcount;
 	FILE *infile;
 	char *argv0 = argv[0];
 
@@ -210,7 +219,7 @@ main(argc, argv)
 	targetlen = TARGETLEN;
 	numberofneighbors = NUMBEROFNEIGHBORS;
 
-	while ((c = getopt(argc, argv, "ln:s:t:")) != -1) {
+	while ((c = getopt(argc, argv, "ln:s:t:v")) != -1) {
 		switch(c) {
 		case 'l':		// predict last entry only
 			lflag = 1;
@@ -224,21 +233,21 @@ main(argc, argv)
 		case 't':		// target len; default is 6
 			targetlen = atoi(optarg);
 			break;
+		case 'v':
+			vflag = 1;
+			break;
 		case '?':
-			usage(argv[0]);
-			exit(0);
+			usage(argv[0], 0);
 		default:
-			usage(argv[0]);
-			exit(1);
+			usage(argv[0], 1);
 		}
 	}
 	argc -= optind;
 	argv += optind;
 
-	if (argc != 1) {
-		usage(argv0);
-		exit(1);
-	}
+	if (argc != 1)
+		usage(argv0, 1);
+	
 
 	if (sourcelen < 2 || targetlen < 2) {
 		fprintf(stderr, "source and target lengths must be greater than two\n");
@@ -280,10 +289,17 @@ main(argc, argv)
 		exit(1);
 	}
 
+	// alocate the result vector
+	prediction = malloc(targetlen * sizeof(int));
+	if (prediction == NULL) {
+                fprintf(stderr, "prediction malloc(%ld) failed\n", targetlen * sizeof(int));
+                exit(1);
+        }
+
 	if (lflag) {
-		predict(bgcount - sourcelen);	// predict for the most recent vector
+		predict(bgcount - sourcelen - targetlen);	// predict for the most recent vector
 	} else {
-		for (i = 0; i < bgcount - sourcelen; i++)
+		for (i = numberofneighbors+1; i < bgcount - sourcelen - targetlen; i++)
 			predict(i);		// predict all vectors
 	}
 
