@@ -192,7 +192,7 @@ predict(thisvec)
 	printf(" actual");
 	for (i = 0; i < targetlen; i++)
 		printf(" %3d", bgp[thisvec+sourcelen+i]);
-	printf(" distance %3d\n" , SQRT(preddist));
+	printf(" distance %3d\n" , SQRT(preddist)/SQRT(targetlen));
 }
 
 void
