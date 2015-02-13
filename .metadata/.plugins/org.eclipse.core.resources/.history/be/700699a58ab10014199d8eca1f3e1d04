@@ -17,7 +17,7 @@ class SVMMethods
     {
     }
 
-    public DexComReading produceReading(String readStr) throws NumberFormatException
+    public DexComReading produceReading(String readStr)
     {
         DexComReading garbage = new DexComReading(0, "empty", 0);
         int position = readStr.indexOf("dateString");
@@ -34,6 +34,7 @@ class SVMMethods
             System.out.println("date format is different");
         }
         System.out.println("should never get here");
+        System.exit(1);
         return garbage;
     }
 
@@ -43,15 +44,8 @@ class SVMMethods
         Vector<DexComReading> dexReadings = new Vector<DexComReading>();
         for(String curString : all)
         {
-        	try
-        	{
-        		DexComReading newRead = produceReading(curString);
-        		dexReadings.add(newRead);
-        	}
-        	catch(NumberFormatException e)
-        	{	
-        		System.out.println("caught bad date format");
-        	}
+            DexComReading newRead = produceReading(curString);
+            dexReadings.add(newRead);
         }
         Vector<Boolean> dangerListHigh = new Vector<Boolean>();
         Vector<Boolean> dangerListLow = new Vector<Boolean>(); 
@@ -142,11 +136,9 @@ class SVMMethods
         double [] set13 = new double[13];
         for(int i=0; i<11; --i)
         {
-        	
             DexComReading tempReading = produceReading(last11.get(i));
             set13[i+1]=tempReading.getDoubleSgv();
         }
-        
         DexComReading tempReading = produceReading(mostRecent);
         set13[0]=tempReading.getDoubleSgv(); 
         set13[12]=tempReading.getTime();

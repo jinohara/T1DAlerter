@@ -67,7 +67,6 @@ public class MyResultReceiver extends ResultReceiver {
 			    
 			    Instance toTest = methodObject.makeInstance(last11, temp.get(0));
 			    Log.d("data", methodObject.classify(SVMs.get(0), toTest).toString());
-			    Log.d("data", methodObject.classify(SVMs.get(1), toTest).toString());
 			    System.out.println(methodObject.classify(SVMs.get(0), toTest));
 			    System.out.println(methodObject.classify(SVMs.get(1), toTest));
 				
