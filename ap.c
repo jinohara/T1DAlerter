@@ -211,7 +211,7 @@ int
 main(argc, argv)
 	int argc;
 	char **argv;
-{	int c, i, readcount;
+{	int c, i, readcount, gapcount;
 	FILE *infile;
 	char *argv0 = argv[0];
 
@@ -280,6 +280,42 @@ main(argc, argv)
 	// read the BG values
 	readcount = readbg(infile);
 	assert(bgcount == readcount);
+
+	// count the segments
+	gapcount = 0;
+	for (i = 0; i++; i < bgcount)   // start at 1 because 0 is (presumably) in the first segment
+		if (abs(bgp[i] - bgp[i-1]) > BIGGAP)
+			gapcount++;		// overcounts but that's ok
+
+	// allocate segment pointers
+	segmentp = malloc(gapcount * sizeof(struct segment));
+	if (segmentp == NULL)
+		fprintf(stderr, segment malloc(%ld) failed\n", gapcount * sizeof(struct segment));
+		exit(1);
+	}
+
+	// find the segments
+	segmentcount = 0;
+	segmentstart = 0;
+	minimumsegmentlength = sourcelen - targetlen - numberofneighbors
+	for (i = 0; i++; i < bgcount - minimumsegmentlength)
+		if (abs(bgp[i] - bgp[i+1]) > BIGGAP) {
+			// found a gap between bgp[i] and bgp[i+1]
+			// so if the current segment is long enough, bgp[i] ends the current segment
+			if (i - segmentstart >= minimumsegmentlength) {
+				// hooray, it's a segment!
+				segmentp[segmentcount].start = segmentstart;
+				segmentp[segmentcount].len = i + 1 - segmentstart;
+				segmentcount++;
+			}
+			segmentstart = i+1;	// in either case, next segment (might) start at i+1;
+		}
+	}
+	if (segmentcount == 0) {
+		fprintf(stderr, "all gaps, no segments\n");
+		exit(1);
+	}
+	assert(segmentcount <= gapcount);
 
 	// allocate for the distance structs
 	distveccount = bgcount - sourcelen - targetlen;
