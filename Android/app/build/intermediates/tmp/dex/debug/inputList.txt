@@ -1,0 +1,7 @@
+/Users/abhimanyumuchhal/AndroidstudioProjects/Android/app/build/intermediates/classes/debug
+/Users/abhimanyumuchhal/AndroidstudioProjects/Android/app/build/intermediates/pre-dexed/debug/Jama-1.0.2-07a8ade701f541d199fe9cbf4e9de69fcb0ba482.jar
+/Users/abhimanyumuchhal/AndroidstudioProjects/Android/app/build/intermediates/pre-dexed/debug/libsvm-21822f706e21d8f99544cc8a399e6147d1c442ba.jar
+/Users/abhimanyumuchhal/AndroidstudioProjects/Android/app/build/intermediates/pre-dexed/debug/ajt-2.9-e53ca623200be4ab69530835bb291ed1f17aad59.jar
+/Users/abhimanyumuchhal/AndroidstudioProjects/Android/app/build/intermediates/pre-dexed/debug/javaml-0.1.7-cde0552b50c501b133fb45c0e83d99afa70e4182.jar
+/Users/abhimanyumuchhal/AndroidstudioProjects/Android/app/build/intermediates/pre-dexed/debug/commons-math-1.2-46cd7a4875c86951b677408560bb34435f495b96.jar
+/Users/abhimanyumuchhal/AndroidstudioProjects/Android/app/build/intermediates/pre-dexed/debug/weka-e0faa9e72ac68eb50f83419ce9afa8f7b8d7742d.jar
