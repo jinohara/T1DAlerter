@@ -27,5 +27,6 @@ proguard/
 *.ipr
 *.iws
 .idea/
+build/
 
 .metadata
