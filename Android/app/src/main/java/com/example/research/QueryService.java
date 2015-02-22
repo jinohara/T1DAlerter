@@ -17,7 +17,9 @@ public class QueryService extends IntentService {
 	private String urlString;
 	public QueryService() {
 		super("MongoLabService");
-		this.urlString = "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a";
+		this.urlString = "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a&s={%22date%22:-1}";
+		//this.urlString = "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a";
+
 		// TODO Auto-generated constructor stub
 	}
 
@@ -36,7 +38,6 @@ public class QueryService extends IntentService {
 		final ResultReceiver receiver = intent.getParcelableExtra("receiver");
 		int type = intent.getIntExtra("type", 0);
 		Bundle b = new Bundle();
-		// receiver.send(type, Bundle.EMPTY);
 
 		if (type > 0) {
 			try {

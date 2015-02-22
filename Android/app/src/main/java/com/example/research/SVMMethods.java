@@ -27,18 +27,9 @@ class SVMMethods
         int position = readStr.indexOf("dateString");
         int sgvVal = garbage.strToSgvVal(readStr, position);
         String slope = garbage.strToDirection(readStr, position);
-        try
-        {
-            int time = garbage.strToTime(readStr, position);
-            DexComReading reading = new DexComReading(sgvVal, slope, time);
-            return reading;
-        }
-        catch(NumberFormatException e)
-        {
-            System.out.println("date format is different");
-        }
-        System.out.println("should never get here");
-        return garbage;
+        int time = garbage.strToTime(readStr, position);
+        DexComReading reading = new DexComReading(sgvVal, slope, time);
+        return reading;
     }
 
     public Vector<Dataset> produceDataSets(Vector<String> all, int tooHigh, int tooLow)
