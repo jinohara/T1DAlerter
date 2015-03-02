@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class QueryService extends IntentService {
+public class QueryService extends IntentService{
 
 	private String urlString;
 	public QueryService() {
@@ -41,6 +41,7 @@ public class QueryService extends IntentService {
 
 		if (type > 0) {
 			try {
+                Log.d("QueryService", "RAN");
 				HttpURLConnection urlConnection = (HttpURLConnection) new URL(
 						urlString).openConnection();
 				urlConnection.connect();

@@ -30,10 +30,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.research.DatabaseActivity"
-            android:label="@string/title_activity_database" >
-        </activity>
-        <activity
             android:name="com.example.research.ResultActivity"
             android:label="@string/title_activity_result" >
         </activity>

@@ -44,8 +44,8 @@ class SVMMethods
         		dexReadings.add(newRead);
         	}
         	catch(NumberFormatException e)
-        	{	
-        		System.out.println("caught bad date format");
+        	{
+                Log.d("SVMMethods", "Bad Date Format");
         	}
         }
         Vector<Boolean> dangerListHigh = new Vector<Boolean>();
