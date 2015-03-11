@@ -9,6 +9,7 @@ import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
+import java.lang.*;
 
 import java.util.Map;
 import java.util.Vector;
@@ -31,9 +32,28 @@ class SVMMethods
         DexComReading reading = new DexComReading(sgvVal, slope, time);
         return reading;
     }
-
-    public Vector<Dataset> produceDataSets(Vector<String> all, int tooHigh, int tooLow)
+    
+    class setsMeanStdDev 
     {
+        public Vector<Dataset> sets;
+        public double stdDev;
+        public double mean;
+        public setsMeanStdDev(Vector<Dataset> setsIn, double meanIn, double stdDevIn)
+        {
+            this.sets = setsIn;
+            this.mean = meanIn;
+            this.stdDev = stdDevIn;
+        }
+    }
+
+    public setsMeanStdDev produceDataSets(Vector<String> all, int tooHigh, int tooLow)
+    {
+        double mean;
+        double standardDev;
+        double standardDevTimesN;
+        double sum;
+        double curCount;
+
         DexComReading garbage = new DexComReading(0,"empty", 0);
         Vector<DexComReading> dexReadings = new Vector<DexComReading>();
         for(String curString : all)
@@ -56,7 +76,19 @@ class SVMMethods
             dangerListLow.add(false);
         }
         for(int i=12; i<dexReadings.size()-6; ++i)
-        { 
+        {
+
+            sum = sum+dexReadings.get(i+6);
+            ++curCount;
+        }
+        mean = sum/curCount;
+        curCount = 0;
+        
+        for(int i=12; i<dexReadings.size()-6; ++i)
+        {
+            standardDevTimesN = standardDevTimesN + 
+                Math.pow((dexReadings.get(i)-mean),2);
+            ++curCount;
             if(dexReadings.get(i+6).getSgv()>tooHigh)
             {
                 dangerListHigh.add(true);
@@ -73,17 +105,21 @@ class SVMMethods
                 dangerListHigh.add(false);
             }
         }
+
+        standardDev = standardDevTimesN/curCount;
+
         double [][] sets13 = new double[dangerListHigh.size()][13];
         for(int i=12; i<dexReadings.size()-6;++i)
         {
             double [] set13 = new double[13];
             for(int j=0; j<12; ++j)
             {
-                set13[11-j]=dexReadings.get(i-j).getDoubleSgv();
+                set13[11-j]=(dexReadings.get(i-j).getDoubleSgv()-mean)/standardDev;
             }
             set13[12]=dexReadings.get(i).getTime();
             sets13[i-12]=set13;
         }
+
 
         Dataset dataHigh = new DefaultDataset();
         Dataset dataLow = new DefaultDataset();
@@ -100,7 +136,8 @@ class SVMMethods
         Vector<Dataset> dataSets = new Vector<Dataset>();
         dataSets.add(dataHigh);
         dataSets.add(dataLow);
-        return dataSets;
+        setsMeanStdDev toReturn = new setsMeanStdDev(dataSets, mean, stdDev);
+        return toReturn;
     }
     public Vector<Classifier> trainSVM(Dataset dataHigh, Dataset dataLow)
     {
@@ -133,18 +170,18 @@ class SVMMethods
     }
 
     //!!THE LAST 11 should be in order from 5 minutes back to 55 minutes back
-    Instance makeInstance(Vector<String> last11, String mostRecent)
+    Instance makeInstance(Vector<String> last11, String mostRecent, setsMeanStdDev info)
     {
         double [] set13 = new double[13];
         for(int i=0; i<11; --i)
         {
         	
             DexComReading tempReading = produceReading(last11.get(i));
-            set13[i+1]=tempReading.getDoubleSgv();
+            set13[i+1]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev;
         }
         
         DexComReading tempReading = produceReading(mostRecent);
-        set13[0]=tempReading.getDoubleSgv(); 
+        set13[0]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev; 
         set13[12]=tempReading.getTime();
         Instance mostRecentInst = new DenseInstance(set13, "false");
         return mostRecentInst;
