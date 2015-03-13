@@ -1,8 +1,8 @@
 package com.example.research;
 
 import android.util.Log;
-
 import net.sf.javaml.classification.Classifier;
+import net.sf.javaml.classification.KNearestNeighbors;
 import net.sf.javaml.classification.evaluation.EvaluateDataset;
 import net.sf.javaml.classification.evaluation.PerformanceMeasure;
 import net.sf.javaml.core.Dataset;
@@ -14,11 +14,10 @@ import java.lang.*;
 import java.util.Map;
 import java.util.Vector;
 
-import libsvm.LibSVM;
-class SVMMethods
+class KNNMethods
 {
-    private static String TAG = "SVMMethods";
-    public SVMMethods()
+    private static String TAG = "KNNMethods";
+    public KNNMethods()
     {
     }
 
@@ -33,6 +32,18 @@ class SVMMethods
         return reading;
     }
     
+    class setsMeanStdDev 
+    {
+        public Vector<Dataset> sets;
+        public double stdDev;
+        public double mean;
+        public setsMeanStdDev(Vector<Dataset> setsIn, double meanIn, double stdDevIn)
+        {
+            this.sets = setsIn;
+            this.mean = meanIn;
+            this.stdDev = stdDevIn;
+        }
+    }
 
     public setsMeanStdDev produceDataSets(Vector<String> all, int tooHigh, int tooLow)
     {
@@ -53,7 +64,7 @@ class SVMMethods
         	}
         	catch(NumberFormatException e)
         	{
-                Log.d("SVMMethods", "Bad Date Format");
+                Log.d("KNNMethods", "Bad Date Format");
         	}
         }
         Vector<Boolean> dangerListHigh = new Vector<Boolean>();
@@ -129,14 +140,14 @@ class SVMMethods
     }
     public Vector<Classifier> trainSVM(Dataset dataHigh, Dataset dataLow)
     {
-        Classifier svmHigh = new LibSVM();
-        svmHigh.buildClassifier(dataHigh);
-        Classifier svmLow = new LibSVM();
-        svmLow.buildClassifier(dataLow);
+        Classifier knnHigh = new KNearestNeighbors(10);
+        knnHigh.buildClassifier(dataHigh);
+        Classifier knnLow = new KNearestNeighbors(10);
+        knnLow.buildClassifier(dataLow);
         
         Vector<Classifier> toReturn = new Vector<Classifier>();
-        toReturn.add(svmHigh);
-        toReturn.add(svmLow);
+        toReturn.add(knnHigh);
+        toReturn.add(knnLow);
         return toReturn;
     }
     public void testSVMs(Vector<Classifier> SVMsToTest, Dataset dataHigh, Dataset dataLow)

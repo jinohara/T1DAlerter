@@ -16,6 +16,7 @@ public class MyResultReceiver extends ResultReceiver {
 	private Vector<String> last11;
 	private Vector<Classifier> SVMs;
 	private SVMMethods methodObject;
+    private setsMeanStdDev holdInfo;
 
 	public interface Receiver {
 		public void onReceiveResult(int resultCode, Bundle resultData);
@@ -44,7 +45,7 @@ public class MyResultReceiver extends ResultReceiver {
 			if (resultCode == 1) {
 				//
 				//POTENTIAL ERROOR HERE!!!!!!!!!!!!!
-			    Instance toClassify = methodObject.makeInstance(last11, temp.get(0));
+			    Instance toClassify = methodObject.makeInstance(last11, temp.get(0), holdInfo);
                 //I'm not sure what you want to do with these values, 
                 //they are either true or false, an alert would happen if one returned true
                 Object classificationHigh = methodObject.classify(SVMs.get(0), toClassify);
@@ -63,10 +64,10 @@ public class MyResultReceiver extends ResultReceiver {
 					last11.add(temp.get(i));	
 				}
 				
-				Vector<Dataset> newDatasets = methodObject.produceDataSets(temp, 80, 160);
-			    SVMs = methodObject.trainSVM(newDatasets.get(0), newDatasets.get(1));
+		        holdInfo = methodObject.produceDataSets(temp, 80, 160);
+			    SVMs = methodObject.trainSVM(holdInfo.sets.get(0), holdInfo.sets.get(1));
 			    
-			    Instance toTest = methodObject.makeInstance(last11, temp.get(0));
+			    Instance toTest = methodObject.makeInstance(last11, temp.get(0), holdInfo);
 			    Log.d("data", methodObject.classify(SVMs.get(0), toTest).toString());
 			    Log.d("data", methodObject.classify(SVMs.get(1), toTest).toString());
 			    //0 -safe
