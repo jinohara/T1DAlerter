@@ -64,13 +64,19 @@ public class QueryService extends IntentService{
 						result.add(line);
 					}
 				}
-				b.putStringArrayList("results", result);
-				receiver.send(type, b);
+
+
+//				b.putStringArrayList("results", result);
+//				receiver.send(type, b);
 
 			} catch (Exception e) {
 				Log.d("issue", e.getMessage());
 
 			}
 		}
+//        Intent myIntent = new Intent(QueryService.this, ResultActivity.class);
+//        myIntent.putExtra("result", result);
+//        startActivity(myIntent);
+
 	}
 }

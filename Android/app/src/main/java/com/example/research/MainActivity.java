@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.view.Menu;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -24,23 +25,24 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO: look up way to disable pending intent from alarm manager
-        Button button = (Button) findViewById(R.id.button1);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	first = false;
-            	MainActivity.this.startService(startIntent(TRAIN));
-            }
-        });
+//        //TODO: look up way to disable pending intent from alarm manager
+//        Button button = (Button) findViewById(R.id.button1);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//            	first = false;
+//            	MainActivity.this.startService(startIntent(TRAIN));
+//            }
+//        });
 
-        //TODO: Look at whether it calls immediately or not
-        if(!first){
+//        //TODO: Look at whether it calls immediately or not
+//        if(!first){
             PendingIntent pi = PendingIntent.getActivity(getApplicationContext(),3333,startIntent(NORMAL),
                     PendingIntent.FLAG_CANCEL_CURRENT);
+            Log.d("MAIN","alarm set");
             AlarmManager mgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-            mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() , 3000, pi);
-
-        }
+            mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() , 30000, pi);
+//
+//        }
     }
 
     @Override
@@ -51,6 +53,7 @@ public class MainActivity extends Activity {
     }
 
     private Intent startIntent(int type){
+        Log.d("startIntent", "WORKS");
         mReceiver = new MyResultReceiver(new Handler());
         mReceiver.setReceiver(mReceiver);
         Intent myIntent = new Intent(MainActivity.this, QueryService.class);

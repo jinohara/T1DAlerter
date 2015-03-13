@@ -19,16 +19,17 @@ public class ResultActivity extends Activity {
 		TextView textView = (TextView) findViewById(R.id.textView1);
 		textView.setTextSize(24);
 		
-		 Button button = (Button) findViewById(R.id.button1);
-		 button.setOnClickListener(new View.OnClickListener() {
-		 public void onClick(View v) {
-           	Intent myIntent = new Intent(ResultActivity.this, MainActivity.class);
-           	ResultActivity.this.startActivity(myIntent);
-           }
-	        });
-		
+//		 Button button = (Button) findViewById(R.id.button1);
+//		 button.setOnClickListener(new View.OnClickListener() {
+//		 public void onClick(View v) {
+//           	Intent myIntent = new Intent(ResultActivity.this, MainActivity.class);
+//           	ResultActivity.this.startActivity(myIntent);
+//           }
+//	        });
+//
 			Intent intent = getIntent();
-			ArrayList<String> val = intent.getExtras().getStringArrayList("val");
+			ArrayList<String> val = intent.getExtras().getStringArrayList("result");
+
 			if(val.size() != 0)
 				textView.setText(val.get(0));
 			

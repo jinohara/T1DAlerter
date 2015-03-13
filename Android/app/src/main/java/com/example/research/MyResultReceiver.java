@@ -1,5 +1,6 @@
 package com.example.research;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -15,8 +16,8 @@ public class MyResultReceiver extends ResultReceiver {
 
 	private Vector<String> last11;
 	private Vector<Classifier> SVMs;
-	private SVMMethods methodObject;
-    private setsMeanStdDev holdInfo;
+	//private SVMMethods methodObject;
+    //private setsMeanStdDev holdInfo;
 
 	public interface Receiver {
 		public void onReceiveResult(int resultCode, Bundle resultData);
@@ -26,7 +27,7 @@ public class MyResultReceiver extends ResultReceiver {
 		super(handler);
 		last11 = new Vector<String>();
 		SVMs = new Vector<Classifier>();
-		methodObject = new SVMMethods();
+		//methodObject = new SVMMethods();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -43,8 +44,9 @@ public class MyResultReceiver extends ResultReceiver {
 			//CLASSIFY IF 1, no training here, the vector here should contain 1 element
             //at index 0, the most recent reading
 			if (resultCode == 1) {
-				//
-				//POTENTIAL ERROOR HERE!!!!!!!!!!!!!
+			/*
+					//
+				//POTENTIAL ERROR HERE!!!!!!!!!!!!!
 			    Instance toClassify = methodObject.makeInstance(last11, temp.get(0), holdInfo);
                 //I'm not sure what you want to do with these values, 
                 //they are either true or false, an alert would happen if one returned true
@@ -56,17 +58,20 @@ public class MyResultReceiver extends ResultReceiver {
                 	last11.set(i, last11.get(i-1));
                 }
                 last11.set(0, (String) temp.get(0));
+               */
 			}
 			//TRAIN / RETRAIN if 2
 			
 			else if (resultCode == 2) {
-				for(int i=11; i>=0 ; --i){
-					last11.add(temp.get(i));	
+
+					for(int i=11; i>=0 ; --i){
+					last11.add(temp.get(i));
 				}
-				
+
+				/*
 		        holdInfo = methodObject.produceDataSets(temp, 80, 160);
 			    SVMs = methodObject.trainSVM(holdInfo.sets.get(0), holdInfo.sets.get(1));
-			    
+
 			    Instance toTest = methodObject.makeInstance(last11, temp.get(0), holdInfo);
 			    Log.d("data", methodObject.classify(SVMs.get(0), toTest).toString());
 			    Log.d("data", methodObject.classify(SVMs.get(1), toTest).toString());
@@ -74,7 +79,7 @@ public class MyResultReceiver extends ResultReceiver {
                 //1 - not so safe
                 System.out.println(methodObject.classify(SVMs.get(0), toTest));
 			    System.out.println(methodObject.classify(SVMs.get(1), toTest));
-				
+			    */
 			}
 
 		}
