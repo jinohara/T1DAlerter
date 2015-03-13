@@ -47,11 +47,11 @@ class KNNMethods
 
     public setsMeanStdDev produceDataSets(Vector<String> all, int tooHigh, int tooLow)
     {
-        double mean;
-        double standardDev;
-        double standardDevTimesN;
-        double sum;
-        double curCount;
+        double mean = 0;
+        double standardDev = 0;
+        double standardDevTimesN = 0;
+        double sum =0;
+        double curCount =0;
 
         DexComReading garbage = new DexComReading(0,"empty", 0);
         Vector<DexComReading> dexReadings = new Vector<DexComReading>();
@@ -77,7 +77,7 @@ class KNNMethods
         for(int i=12; i<dexReadings.size()-6; ++i)
         {
 
-            sum = sum+dexReadings.get(i+6);
+            sum = sum+dexReadings.get(i+6).getSgv();
             ++curCount;
         }
         mean = sum/curCount;
@@ -86,7 +86,7 @@ class KNNMethods
         for(int i=12; i<dexReadings.size()-6; ++i)
         {
             standardDevTimesN = standardDevTimesN + 
-                Math.pow((dexReadings.get(i)-mean),2);
+                Math.pow((dexReadings.get(i).getSgv()-mean),2);
             ++curCount;
             if(dexReadings.get(i+6).getSgv()>tooHigh)
             {
@@ -135,7 +135,7 @@ class KNNMethods
         Vector<Dataset> dataSets = new Vector<Dataset>();
         dataSets.add(dataHigh);
         dataSets.add(dataLow);
-        setsMeanStdDev toReturn = new setsMeanStdDev(dataSets, mean, stdDev);
+        setsMeanStdDev toReturn = new setsMeanStdDev(dataSets, mean, standardDev);
         return toReturn;
     }
     public Vector<Classifier> trainSVM(Dataset dataHigh, Dataset dataLow)

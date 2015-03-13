@@ -1,4 +1,7 @@
+package com.example.research;
+
 import java.util.Vector;
+import net.sf.javaml.core.Dataset;
 class setsMeanStdDev 
 {
     public Vector<Dataset> sets;
