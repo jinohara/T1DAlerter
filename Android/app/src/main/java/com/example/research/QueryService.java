@@ -3,7 +3,6 @@ package com.example.research;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.util.Log;
 
 import net.sf.javaml.classification.Classifier;
