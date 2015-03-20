@@ -8,12 +8,13 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
+    public int HIGH = 0;
+    public int LOW = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
             WakefulBroadcastReceiver.startWakefulService(getApplicationContext());
         //TODO: look up way to disable pending intent from alarm manager
         Button button = (Button) findViewById(R.id.button1);

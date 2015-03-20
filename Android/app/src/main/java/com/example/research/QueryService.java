@@ -102,12 +102,25 @@ public class QueryService extends IntentService {
     }
 
     private void normalRun(ArrayList<String> result) {
+
+        int alertVal;
+
         Log.d("NormalRun", "" + result.get(0));
         Instance toClassify = methodObject.makeInstance(last11, result.get(0), holdInfo);
         //I'm not sure what you want to do with these values,
         //they are either true or false, an alert would happen if one returned true
-        Object classificationHigh = methodObject.classify(SVMs.get(0), toClassify);
-        Object classificationLow = methodObject.classify(SVMs.get(1), toClassify);
+
+        //HIGH
+        if (methodObject.classify(SVMs.get(0), toClassify))
+            alertVal = 1;
+        //LOW
+        else if (methodObject.classify(SVMs.get(1), toClassify))
+            alertVal = -1;
+        //NORMAL
+        alertVal = 0;
+
+        Log.d("NormalRun", "" + alertVal);
+
         //increment the last11
         for (int i = 10; i > 0; --i) {
             last11.set(i, last11.get(i - 1));

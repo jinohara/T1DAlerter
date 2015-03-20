@@ -47,6 +47,7 @@ class KNNMethods
 
     public setsMeanStdDev produceDataSets(Vector<String> all, int tooHigh, int tooLow)
     {
+
         double mean = 0;
         double standardDev = 0;
         double standardDevTimesN = 0;

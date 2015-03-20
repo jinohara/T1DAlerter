@@ -176,8 +176,9 @@ class SVMMethods
         return mostRecentInst;
     }
 
-    public Object classify(Classifier svm, Instance aRead)
+    public boolean classify(Classifier svm, Instance aRead)
     {
-        return svm.classify(aRead);
+        return svm.classify(aRead).equals(true);
+
     } 
 }
