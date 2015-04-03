@@ -9,7 +9,6 @@ import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
-import java.lang.*;
 
 import java.util.Map;
 import java.util.Vector;
@@ -159,21 +158,27 @@ class SVMMethods
     }
 
     //!!THE LAST 11 should be in order from 5 minutes back to 55 minutes back
-    Instance makeInstance(Vector<String> last11, String mostRecent, setsMeanStdDev info)
-    {
+    Instance makeInstance(double [] set13){
+
+        Instance mostRecentInst = new DenseInstance(set13, "false");
+        return mostRecentInst;
+    }
+
+    double [] getDataSGV(Vector<String> last11, String mostRecent, setsMeanStdDev info){
+
+
         double [] set13 = new double[13];
-        for(int i=0; i<11; --i)
+        for(int i=0; i<11; ++i)
         {
-        	
             DexComReading tempReading = produceReading(last11.get(i));
             set13[i+1]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev;
         }
-        
+
         DexComReading tempReading = produceReading(mostRecent);
-        set13[0]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev; 
+        set13[0]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev;
         set13[12]=tempReading.getTime();
-        Instance mostRecentInst = new DenseInstance(set13, "false");
-        return mostRecentInst;
+
+        return set13;
     }
 
     public boolean classify(Classifier svm, Instance aRead)
