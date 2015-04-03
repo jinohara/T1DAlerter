@@ -128,15 +128,16 @@ public class GraphActivity extends Activity {
         });
                 Instance toClassify = methodObject.makeInstance(data);
 
-
+            //DANNY LOOK HEREEEEEEEE
             //HIGH
             if (methodObject.classify(SVMs.get(0), toClassify)) {
                 alertVal = 1;
                 Twilio.httpMessage("HIGH");
+
             }
             //LOW
             else if (methodObject.classify(SVMs.get(1), toClassify)) {
-                Twilio.httpMessage("HIGH");
+                Twilio.httpMessage("LOW");
                 alertVal = -1;
             }
 
