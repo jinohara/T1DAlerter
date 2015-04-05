@@ -158,6 +158,7 @@ class SVMMethods
     }
 
     //!!THE LAST 11 should be in order from 5 minutes back to 55 minutes back
+    //TODO: Fix to give actual SGV values instead of values +/= 0
     Instance makeInstance(double [] set13){
 
         Instance mostRecentInst = new DenseInstance(set13, "false");

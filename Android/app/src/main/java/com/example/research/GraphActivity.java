@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.PointsGraphSeries;
@@ -23,8 +24,8 @@ import java.util.Vector;
 
 public class GraphActivity extends Activity {
 
-    public int HIGH = 160;
-    public int LOW = 80;
+    public int HIGH = 150;
+    public int LOW = 100;
     private int fileIndex = 0;
     private GraphView graph;
     private Vector<String> last11;
@@ -44,12 +45,8 @@ public class GraphActivity extends Activity {
         SVMs = new Vector<Classifier>();
         methodObject = new SVMMethods();
 
-        graph = (GraphView) findViewById(R.id.graph);//new GraphView(this);
-        Viewport display = graph.getViewport();
-        display.setMaxX(60);
-        display.setMaxY(300);
-        display.setBackgroundColor(getResources().getColor(
-                android.R.color.holo_green_light));
+        graph = (GraphView) findViewById(R.id.graph);
+        graph_init();
 
         Vector<String> result = read(TRAIN, "synthData.txt");
         train(result);
@@ -65,6 +62,23 @@ public class GraphActivity extends Activity {
         };
                 timer.scheduleAtFixedRate(timerTask, 10000, 1000);
 
+    }
+
+    private void graph_init(){
+        graph.setTitle("Blood Glucose (mg/dl) over the last hour");
+
+        GridLabelRenderer labels = new GridLabelRenderer(graph);
+
+        labels.setHorizontalAxisTitle("Last Hour");
+        labels.setVerticalAxisTitle("Blood Glucose (mg/dl)");
+
+        Viewport display = graph.getViewport();
+        display.setXAxisBoundsManual(true);
+        display.setYAxisBoundsManual(true);
+        display.setMaxX(60);
+        display.setMaxY(300);
+        display.setBackgroundColor(getResources().getColor(
+                android.R.color.holo_green_light));
     }
 
     private Vector<String> read(int type, String filename){
@@ -108,8 +122,13 @@ public class GraphActivity extends Activity {
         holdInfo = methodObject.produceDataSets(result, LOW, HIGH);
         SVMs = methodObject.trainSVM(holdInfo.sets.get(0), holdInfo.sets.get(1));
 
-        double data [] =  methodObject.getDataSGV(last11, result.get(0), holdInfo);
-        graph(data);
+        final double data [] =  methodObject.getDataSGV(last11, result.get(0), holdInfo);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                graph(data, 0);
+            }
+        });
 
         Instance toTest = methodObject.makeInstance(data);
     }
@@ -117,32 +136,43 @@ public class GraphActivity extends Activity {
     private void normalRun(Vector<String> result) {
 
 
-        int alertVal =-1;
+        final int alertVal;
         Log.d("NormalRun", "" + result.get(0));
         final double data [] =  methodObject.getDataSGV(last11, result.get(0), holdInfo);
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                graph(data);
-            }
-        });
                 Instance toClassify = methodObject.makeInstance(data);
 
-            //DANNY LOOK HEREEEEEEEE
+            //DANNY LOOK HEREE
             //HIGH
             if (methodObject.classify(SVMs.get(0), toClassify)) {
-                alertVal = 1;
                 Twilio.httpMessage("HIGH");
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        graph(data, 1);
+                    }
+                });
+
 
             }
             //LOW
             else if (methodObject.classify(SVMs.get(1), toClassify)) {
                 Twilio.httpMessage("LOW");
-                alertVal = -1;
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        graph(data, -1);
+                    }
+                });
             }
 
-            Log.d("NormalRun", "" + alertVal);
-
+            else {
+                this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        graph(data, 0);
+                    }
+                });
+            }
         //increment the last11
         for (int i = 10; i > 0; --i) {
             last11.set(i, last11.get(i - 1));
@@ -150,16 +180,32 @@ public class GraphActivity extends Activity {
         last11.set(0, (String) result.get(0));
     }
 
-    public void graph(double data []){
+    public void graph(double data [], int alertVal){
 
         DataPoint displayvals [] = new DataPoint[11];
         for(int i = 1; i < 12; i++){
             displayvals[i-1] = new DataPoint(i * 5, data[i]);
         }
 
+
         PointsGraphSeries<DataPoint> series = new PointsGraphSeries<DataPoint>(displayvals);
         graph.removeAllSeries();
         graph.addSeries(series);
+
+        if(alertVal == 1)
+            graph.getViewport().setBackgroundColor(getResources().getColor
+                    (android.R.color.holo_red_light));
+        else if (alertVal == -1){
+            graph.getViewport().setBackgroundColor(getResources().getColor
+                    (android.R.color.holo_orange_light));
+        }
+        else {
+            graph.getViewport().setBackgroundColor(getResources().getColor
+                    (android.R.color.holo_green_light));
+        }
+
+
+
     }
 
 }

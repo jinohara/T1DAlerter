@@ -27,7 +27,8 @@ public class Twilio {
     public static void httpMessage(String alert){
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(
-                "https://api.twilio.com/2010-04-01/Accounts/AC781d1a15b57b265850465913c830bfa5/SMS/Messages");
+                "https://api.twilio.com/2010-04-01/Accounts/AC781d1a15b57b265850465913c830bfa5/" +
+                        "SMS/Messages");
         String base64EncodedCredentials = "Basic "
                 + Base64.encodeToString(
                 (ACCOUNT_SID + ":" + AUTH_TOKEN).getBytes(),
@@ -59,7 +60,7 @@ public class Twilio {
 
         }
         catch (Exception e){
-            Log.d("Twilio:", "Error");
+            Log.d("Twilio: ", "" + e.getStackTrace());
         }
 
     }
