@@ -159,27 +159,36 @@ class SVMMethods
 
     //!!THE LAST 11 should be in order from 5 minutes back to 55 minutes back
     //TODO: Fix to give actual SGV values instead of values +/= 0
-    Instance makeInstance(double [] set13){
+    Instance makeInstance(double [] sgv13, setsMeanStdDev info){
+
+
+        double [] set13 = new double[13];
+        for(int i=1; i<12; ++i)
+        {
+            set13[i]=(sgv13[i]-info.mean)/info.stdDev;
+        }
+
+        set13[0]=(sgv13[0]-info.mean)/info.stdDev;
 
         Instance mostRecentInst = new DenseInstance(set13, "false");
         return mostRecentInst;
     }
 
-    double [] getDataSGV(Vector<String> last11, String mostRecent, setsMeanStdDev info){
+    double [] getDataSGV(Vector<String> last11, String mostRecent){
 
 
-        double [] set13 = new double[13];
+        double [] sgv13 = new double[13];
         for(int i=0; i<11; ++i)
         {
             DexComReading tempReading = produceReading(last11.get(i));
-            set13[i+1]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev;
+            sgv13[i+1]=tempReading.getDoubleSgv();
         }
 
         DexComReading tempReading = produceReading(mostRecent);
-        set13[0]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev;
-        set13[12]=tempReading.getTime();
+        sgv13[0]=tempReading.getDoubleSgv();
+        sgv13[12]=tempReading.getTime();
 
-        return set13;
+        return sgv13;
     }
 
     public boolean classify(Classifier svm, Instance aRead)

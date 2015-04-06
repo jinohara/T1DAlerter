@@ -122,7 +122,7 @@ public class GraphActivity extends Activity {
         holdInfo = methodObject.produceDataSets(result, LOW, HIGH);
         SVMs = methodObject.trainSVM(holdInfo.sets.get(0), holdInfo.sets.get(1));
 
-        final double data [] =  methodObject.getDataSGV(last11, result.get(0), holdInfo);
+        final double data [] =  methodObject.getDataSGV(last11, result.get(0));
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -130,7 +130,7 @@ public class GraphActivity extends Activity {
             }
         });
 
-        Instance toTest = methodObject.makeInstance(data);
+        Instance toTest = methodObject.makeInstance(data, holdInfo);
     }
 
     private void normalRun(Vector<String> result) {
@@ -138,8 +138,8 @@ public class GraphActivity extends Activity {
 
         final int alertVal;
         Log.d("NormalRun", "" + result.get(0));
-        final double data [] =  methodObject.getDataSGV(last11, result.get(0), holdInfo);
-                Instance toClassify = methodObject.makeInstance(data);
+        final double data [] =  methodObject.getDataSGV(last11, result.get(0));
+                Instance toClassify = methodObject.makeInstance(data,holdInfo);
 
             //DANNY LOOK HEREE
             //HIGH
