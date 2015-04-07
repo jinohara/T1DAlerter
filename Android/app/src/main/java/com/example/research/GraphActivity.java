@@ -24,14 +24,15 @@ import java.util.Vector;
 
 public class GraphActivity extends Activity {
 
-    public int HIGH = 150;
-    public int LOW = 100;
     private int fileIndex = 0;
     private GraphView graph;
     private Vector<String> last11;
     private Vector<Classifier> SVMs;
     private SVMMethods methodObject;
     private setsMeanStdDev holdInfo;
+
+    public static final int HIGH = 150;
+    public  static final int LOW = 100;
     private static final int TRAIN = 2;
     private static final int NORMAL = 1;
     private static final int SIZE = 10000;
@@ -67,10 +68,7 @@ public class GraphActivity extends Activity {
     private void graph_init(){
         graph.setTitle("Blood Glucose (mg/dl) over the last hour");
 
-        GridLabelRenderer labels = new GridLabelRenderer(graph);
 
-        labels.setHorizontalAxisTitle("Last Hour");
-        labels.setVerticalAxisTitle("Blood Glucose (mg/dl)");
 
         Viewport display = graph.getViewport();
         display.setXAxisBoundsManual(true);
@@ -79,6 +77,15 @@ public class GraphActivity extends Activity {
         display.setMaxY(300);
         display.setBackgroundColor(getResources().getColor(
                 android.R.color.holo_green_light));
+
+        GridLabelRenderer labels = new GridLabelRenderer(graph);
+        labels.setHorizontalLabelsVisible(true);
+        labels.setVerticalLabelsVisible(true);
+        labels.setVerticalAxisTitleTextSize(20);
+        labels.setHorizontalAxisTitle("Last Hour");
+        labels.setVerticalAxisTitle("Blood Glucose (mg/dl)");
+
+
     }
 
     private Vector<String> read(int type, String filename){
