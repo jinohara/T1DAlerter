@@ -111,7 +111,6 @@ class SVMMethods
 
         Dataset dataHigh = new DefaultDataset();
         Dataset dataLow = new DefaultDataset();
-        Log.d(TAG, "Value="+tooHigh);
         for(int i=0; i<sets13.length; ++i)
         {
             Instance instanceWClassValueHigh=new DenseInstance(sets13[i], 

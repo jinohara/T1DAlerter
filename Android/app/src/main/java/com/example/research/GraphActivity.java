@@ -8,6 +8,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import net.sf.javaml.classification.Classifier;
@@ -61,14 +62,12 @@ public class GraphActivity extends Activity {
 
             }
         };
-                timer.scheduleAtFixedRate(timerTask, 10000, 1000);
+                timer.scheduleAtFixedRate(timerTask, 10000, 10000);
 
     }
 
     private void graph_init(){
         graph.setTitle("Blood Glucose (mg/dl) over the last hour");
-
-
 
         Viewport display = graph.getViewport();
         display.setXAxisBoundsManual(true);
@@ -144,7 +143,6 @@ public class GraphActivity extends Activity {
 
 
         final int alertVal;
-        Log.d("NormalRun", "" + result.get(0));
         final double data [] =  methodObject.getDataSGV(last11, result.get(0));
                 Instance toClassify = methodObject.makeInstance(data,holdInfo);
 
@@ -152,17 +150,18 @@ public class GraphActivity extends Activity {
             //HIGH
             if (methodObject.classify(SVMs.get(0), toClassify)) {
                 Twilio.httpMessage("HIGH");
+                Yo.sendMessage("HIGH");
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                         graph(data, 1);
                     }
                 });
-
-
             }
             //LOW
             else if (methodObject.classify(SVMs.get(1), toClassify)) {
+                Yo.sendMessage("LOW");
                 Twilio.httpMessage("LOW");
                 this.runOnUiThread(new Runnable() {
                     @Override
@@ -189,15 +188,27 @@ public class GraphActivity extends Activity {
 
     public void graph(double data [], int alertVal){
 
-        DataPoint displayvals [] = new DataPoint[11];
-        for(int i = 1; i < 12; i++){
-            displayvals[i-1] = new DataPoint(i * 5, data[i]);
+        DataPoint displayvals [] = new DataPoint[12];
+        for(int i = 0; i < 12; i++){
+            displayvals[i] = new DataPoint(i * 5, data[i]);
         }
 
+        DataPoint lowBound[] = new DataPoint[12];
+        for(int i =0; i < 12; i++)
+            lowBound[i] = new DataPoint(i*5, LOW);
 
+        DataPoint highBound[] = new DataPoint[12];
+        for(int i =0; i < 12; i++)
+            highBound[i] = new DataPoint(i*5, HIGH);
+
+        LineGraphSeries<DataPoint> high = new LineGraphSeries<DataPoint>(highBound);
+        LineGraphSeries<DataPoint> low = new LineGraphSeries<DataPoint>(lowBound);
         PointsGraphSeries<DataPoint> series = new PointsGraphSeries<DataPoint>(displayvals);
+
         graph.removeAllSeries();
         graph.addSeries(series);
+        graph.addSeries(low);
+        graph.addSeries(high);
 
         if(alertVal == 1)
             graph.getViewport().setBackgroundColor(getResources().getColor
