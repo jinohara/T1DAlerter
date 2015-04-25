@@ -29,7 +29,7 @@ public class Yo {
 
             int responseCode = con.getResponseCode();
 
-            Log.d("MainActivity", "responseCode " + responseCode);
+            Log.d("YO", "responseCode " + responseCode);
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(con.getInputStream()));
@@ -40,11 +40,11 @@ public class Yo {
                 response.append(inputLine);
             }
             in.close();
-            Log.d("Main Activity", response.toString());
+            Log.d("YO", response.toString());
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("MainActivity", e.toString());
+            Log.e("YO", e.toString());
         }
     }
 }

@@ -8,7 +8,6 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.PointsGraphSeries;
 
 import net.sf.javaml.classification.Classifier;
@@ -150,7 +149,7 @@ public class GraphActivity extends Activity {
             //HIGH
             if (methodObject.classify(SVMs.get(0), toClassify)) {
                 Twilio.httpMessage("HIGH");
-                Yo.sendMessage("HIGH");
+                Yo.sendMessage("OMGITSANJANAA");
                 this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -161,7 +160,7 @@ public class GraphActivity extends Activity {
             }
             //LOW
             else if (methodObject.classify(SVMs.get(1), toClassify)) {
-                Yo.sendMessage("LOW");
+                Yo.sendMessage("OMGITSANJANAA");
                 Twilio.httpMessage("LOW");
                 this.runOnUiThread(new Runnable() {
                     @Override
@@ -193,22 +192,22 @@ public class GraphActivity extends Activity {
             displayvals[i] = new DataPoint(i * 5, data[i]);
         }
 
-        DataPoint lowBound[] = new DataPoint[12];
-        for(int i =0; i < 12; i++)
-            lowBound[i] = new DataPoint(i*5, LOW);
+//        DataPoint lowBound[] = new DataPoint[12];
+//        for(int i =0; i < 12; i++)
+//            lowBound[i] = new DataPoint(i*5, LOW);
+//
+//        DataPoint highBound[] = new DataPoint[12];
+//        for(int i =0; i < 12; i++)
+//            highBound[i] = new DataPoint(i*5, HIGH);
 
-        DataPoint highBound[] = new DataPoint[12];
-        for(int i =0; i < 12; i++)
-            highBound[i] = new DataPoint(i*5, HIGH);
-
-        LineGraphSeries<DataPoint> high = new LineGraphSeries<DataPoint>(highBound);
-        LineGraphSeries<DataPoint> low = new LineGraphSeries<DataPoint>(lowBound);
+//        LineGraphSeries<DataPoint> high = new LineGraphSeries<DataPoint>(highBound);
+//        LineGraphSeries<DataPoint> low = new LineGraphSeries<DataPoint>(lowBound);
         PointsGraphSeries<DataPoint> series = new PointsGraphSeries<DataPoint>(displayvals);
 
         graph.removeAllSeries();
         graph.addSeries(series);
-        graph.addSeries(low);
-        graph.addSeries(high);
+//        graph.addSeries(low);
+//        graph.addSeries(high);
 
         if(alertVal == 1)
             graph.getViewport().setBackgroundColor(getResources().getColor
