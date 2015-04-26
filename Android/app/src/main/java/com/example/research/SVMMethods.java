@@ -9,7 +9,6 @@ import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
-import java.lang.*;
 
 import java.util.Map;
 import java.util.Vector;
@@ -32,7 +31,7 @@ class SVMMethods
         DexComReading reading = new DexComReading(sgvVal, slope, time);
         return reading;
     }
-    
+
 
     public setsMeanStdDev produceDataSets(Vector<String> all, int tooHigh, int tooLow)
     {
@@ -46,18 +45,18 @@ class SVMMethods
         Vector<DexComReading> dexReadings = new Vector<DexComReading>();
         for(String curString : all)
         {
-        	try
-        	{
-        		DexComReading newRead = produceReading(curString);
-        		dexReadings.add(newRead);
-        	}
-        	catch(NumberFormatException e)
-        	{
+            try
+            {
+                DexComReading newRead = produceReading(curString);
+                dexReadings.add(newRead);
+            }
+            catch(NumberFormatException e)
+            {
                 Log.d("SVMMethods", "Bad Date Format");
-        	}
+            }
         }
         Vector<Boolean> dangerListHigh = new Vector<Boolean>();
-        Vector<Boolean> dangerListLow = new Vector<Boolean>(); 
+        Vector<Boolean> dangerListLow = new Vector<Boolean>();
         for(int i=0; i<12; ++i)
         {
             dangerListHigh.add(false);
@@ -71,12 +70,12 @@ class SVMMethods
         }
         mean = sum/curCount;
         curCount = 0;
-        
+
         for(int i=12; i<dexReadings.size()-6; ++i)
         {
             double dexReadDouble = (dexReadings.get(i).getSgv());
-            standardDevTimesN = standardDevTimesN + 
-                Math.pow((dexReadDouble-mean),2);
+            standardDevTimesN = standardDevTimesN +
+                    Math.pow((dexReadDouble-mean),2);
             ++curCount;
             if(dexReadings.get(i+6).getSgv()>tooHigh)
             {
@@ -112,12 +111,11 @@ class SVMMethods
 
         Dataset dataHigh = new DefaultDataset();
         Dataset dataLow = new DefaultDataset();
-        Log.d(TAG, "Value="+tooHigh);
         for(int i=0; i<sets13.length; ++i)
         {
-            Instance instanceWClassValueHigh=new DenseInstance(sets13[i], 
+            Instance instanceWClassValueHigh=new DenseInstance(sets13[i],
                     dangerListHigh.get(i));
-            Instance instanceWClassValueLow = new DenseInstance(sets13[i], 
+            Instance instanceWClassValueLow = new DenseInstance(sets13[i],
                     dangerListLow.get(i));
             dataHigh.add(instanceWClassValueHigh);
             dataLow.add(instanceWClassValueLow);
@@ -134,17 +132,17 @@ class SVMMethods
         svmHigh.buildClassifier(dataHigh);
         Classifier svmLow = new LibSVM();
         svmLow.buildClassifier(dataLow);
-        
+
         Vector<Classifier> toReturn = new Vector<Classifier>();
         toReturn.add(svmHigh);
         toReturn.add(svmLow);
         return toReturn;
     }
     public void testSVMs(Vector<Classifier> SVMsToTest, Dataset dataHigh, Dataset dataLow)
-    { 
+    {
         Map<Object, PerformanceMeasure> pmHigh = EvaluateDataset.testDataset(SVMsToTest.get(0),
                 dataHigh);
-        Map<Object, PerformanceMeasure> pmLow = EvaluateDataset.testDataset(SVMsToTest.get(1), 
+        Map<Object, PerformanceMeasure> pmLow = EvaluateDataset.testDataset(SVMsToTest.get(1),
                 dataLow);
         for(Object o : pmHigh.keySet())
         {
@@ -152,33 +150,49 @@ class SVMMethods
             System.out.println("f measure: "+ pmHigh.get(o).getFMeasure());
         }
         for(Object o: pmLow.keySet())
-        { 
-            System.out.println(o + ": " + pmLow.get(o).tp + " "+ pmLow.get(o).fp);   
+        {
+            System.out.println(o + ": " + pmLow.get(o).tp + " "+ pmLow.get(o).fp);
             System.out.println("f measure: "+ pmLow.get(o).getFMeasure());
         }
     }
 
     //!!THE LAST 11 should be in order from 5 minutes back to 55 minutes back
-    Instance makeInstance(Vector<String> last11, String mostRecent, setsMeanStdDev info)
-    {
+    //TODO: Fix to give actual SGV values instead of values +/= 0
+    Instance makeInstance(double [] sgv13, setsMeanStdDev info){
+
+
         double [] set13 = new double[13];
-        for(int i=0; i<11; --i)
+        for(int i=1; i<12; ++i)
         {
-        	
-            DexComReading tempReading = produceReading(last11.get(i));
-            set13[i+1]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev;
+            set13[i]=(sgv13[i]-info.mean)/info.stdDev;
         }
-        
-        DexComReading tempReading = produceReading(mostRecent);
-        set13[0]=(tempReading.getDoubleSgv()-info.mean)/info.stdDev; 
-        set13[12]=tempReading.getTime();
+
+        set13[0]=(sgv13[0]-info.mean)/info.stdDev;
+
         Instance mostRecentInst = new DenseInstance(set13, "false");
         return mostRecentInst;
+    }
+
+    double [] getDataSGV(Vector<String> last11, String mostRecent){
+
+
+        double [] sgv13 = new double[13];
+        for(int i=0; i<11; ++i)
+        {
+            DexComReading tempReading = produceReading(last11.get(i));
+            sgv13[i+1]=tempReading.getDoubleSgv();
+        }
+
+        DexComReading tempReading = produceReading(mostRecent);
+        sgv13[0]=tempReading.getDoubleSgv();
+        sgv13[12]=tempReading.getTime();
+
+        return sgv13;
     }
 
     public boolean classify(Classifier svm, Instance aRead)
     {
         return svm.classify(aRead).equals(true);
 
-    } 
+    }
 }

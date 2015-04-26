@@ -9,19 +9,30 @@
         android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <android:uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-         <service
-                android:name="QueryService">
- 		</service>
- 		<receiver  android:process=":remote" android:name="Alarm"></receiver>
+        <service android:name=".QueryService" >
+        </service>
+
+        <receiver
+            android:name=".Alarm"
+            android:process=":remote" />
+
         <activity
-            android:name="com.example.research.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,8 +41,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.research.ResultActivity"
+            android:name=".ResultActivity"
             android:label="@string/title_activity_result" >
+        </activity>
+        <activity
+            android:name=".GraphActivity"
+            android:label="@string/title_activity_graph" >
         </activity>
     </application>
 

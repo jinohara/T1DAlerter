@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_database">DatabaseActivity</string>
     <string name="title_activity_result">ResultActivity</string>
+    <string name="title_activity_graph">GraphActivity</string>
 
 </resources>
