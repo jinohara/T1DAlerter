@@ -32,7 +32,6 @@ public abstract class WakefulBroadcastReceiver extends BroadcastReceiver {
             }
             //primary intent (run now)
             Intent intent = new Intent(context, QueryService.class);
-
             intent.putExtra(EXTRA_WAKE_LOCK_ID, id);
             intent.putExtra("type", TRAIN);
             ComponentName comp = context.startService(intent);

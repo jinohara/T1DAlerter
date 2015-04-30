@@ -33,7 +33,7 @@ class SVMMethods
     }
 
 
-    public setsMeanStdDev produceDataSets(Vector<String> all, int tooHigh, int tooLow)
+    public setsMeanStdDev produceDataSets(int tooHigh, int tooLow)
     {
         double mean;
         double standardDev = 0;
@@ -43,7 +43,7 @@ class SVMMethods
 
         DexComReading garbage = new DexComReading(0,"empty", 0);
         Vector<DexComReading> dexReadings = new Vector<DexComReading>();
-        for(String curString : all)
+        for(String curString : InitActivity.result)
         {
             try
             {
