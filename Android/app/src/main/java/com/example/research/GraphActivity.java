@@ -26,11 +26,8 @@ public class GraphActivity extends Activity {
     public static setsMeanStdDev holdInfo;
     public static ArrayList<String> result;
 
-    public static GraphView graph;
-    public static Handler UIHandler;
-    public static final int HIGH = 180;
-    public static final int LOW = 100;
-
+    private static GraphView graph;
+    private static Handler UIHandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
