@@ -33,7 +33,7 @@ class SVMMethods
     }
 
 
-    public setsMeanStdDev produceDataSets(int tooHigh, int tooLow)
+    public setsMeanStdDev produceDataSets()
     {
         double mean;
         double standardDev = 0;
@@ -77,17 +77,17 @@ class SVMMethods
             standardDevTimesN = standardDevTimesN +
                     Math.pow((dexReadDouble-mean),2);
             ++curCount;
-            if(dexReadings.get(i+6).getSgv()>tooHigh)
+            if(dexReadings.get(i+6).getSgv()>MainActivity.HIGH)
             {
                 dangerListHigh.add(true);
                 dangerListLow.add(false);
             }
-            else if(dexReadings.get(i+6).getSgv()>tooLow)
+            else if(dexReadings.get(i+6).getSgv()>MainActivity.LOW)
             {
                 dangerListHigh.add(false);
                 dangerListLow.add(false);
             }
-            else if(dexReadings.get(i+6).getSgv()<tooLow)
+            else if(dexReadings.get(i+6).getSgv()<MainActivity.LOW)
             {
                 dangerListLow.add(true);
                 dangerListHigh.add(false);

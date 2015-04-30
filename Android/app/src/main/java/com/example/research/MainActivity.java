@@ -20,6 +20,9 @@ public class MainActivity extends Activity {
     EditText patientName;
     EditText phoneNumber;
     ViewFlipper vf;
+    NumberPicker highNp;
+    NumberPicker lowNp;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +33,7 @@ public class MainActivity extends Activity {
         patientName = (EditText)findViewById(R.id.editText);
         phoneNumber = (EditText)findViewById(R.id.editText2);
 
-        
+
         Button next = (Button) findViewById(R.id.nextButton);
         next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -40,13 +43,13 @@ public class MainActivity extends Activity {
             }
         });
 
-        NumberPicker lowNp = (NumberPicker) findViewById(R.id.lowNP);
+        lowNp = (NumberPicker) findViewById(R.id.lowNP);
         lowNp.setMaxValue(300);
         lowNp.setMinValue(0);
         lowNp.setValue(100);
         LOW = lowNp.getValue();
 
-        NumberPicker highNp = (NumberPicker) findViewById(R.id.highNP);
+        highNp = (NumberPicker) findViewById(R.id.highNP);
         highNp.setMaxValue(300);
         highNp.setMinValue(0);
         highNp.setValue(180);
@@ -55,6 +58,8 @@ public class MainActivity extends Activity {
         Button start = (Button) findViewById(R.id.start);
         start.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                LOW = lowNp.getValue();
+                HIGH = highNp.getValue();
                 Intent intent = new Intent(getApplicationContext(), GraphActivity.class);
                 startActivity(intent);
             }
