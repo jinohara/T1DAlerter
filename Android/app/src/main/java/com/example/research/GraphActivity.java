@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 
-public class InitActivity extends Activity {
+public class GraphActivity extends Activity {
 
     public static Vector<String> last11;
     public static Vector<Classifier> SVMs;
@@ -34,7 +34,7 @@ public class InitActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_init);
+        setContentView(R.layout.activity_graph);
 
         last11 = new Vector<String>();
         SVMs = new Vector<Classifier>();
@@ -84,23 +84,10 @@ public class InitActivity extends Activity {
             displayvals[i] = new DataPoint(i * 5, data[i]);
         }
 
-//        DataPoint lowBound[] = new DataPoint[12];
-//        for(int i =0; i < 12; i++)
-//            lowBound[i] = new DataPoint(i*5, LOW);
-//
-//        DataPoint highBound[] = new DataPoint[12];
-//        for(int i =0; i < 12; i++)
-//            highBound[i] = new DataPoint(i*5, HIGH);
-
-//        LineGraphSeries<DataPoint> high = new LineGraphSeries<DataPoint>(highBound);
-//        LineGraphSeries<DataPoint> low = new LineGraphSeries<DataPoint>(lowBound);
-
         PointsGraphSeries<DataPoint> series = new PointsGraphSeries<DataPoint>(displayvals);
 
         graph.removeAllSeries();
         graph.addSeries(series);
-//        graph.addSeries(low);
-//        graph.addSeries(high);
 
         if(alertVal == 1)
             graph.getViewport().setBackgroundColor(Color.RED);

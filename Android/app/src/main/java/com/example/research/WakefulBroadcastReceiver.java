@@ -46,7 +46,7 @@ public abstract class WakefulBroadcastReceiver extends BroadcastReceiver {
                     0);
             AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
             mgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() ,
-                    30000, pi);
+                    300000, pi);
 
             PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,

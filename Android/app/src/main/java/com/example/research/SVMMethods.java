@@ -43,7 +43,7 @@ class SVMMethods
 
         DexComReading garbage = new DexComReading(0,"empty", 0);
         Vector<DexComReading> dexReadings = new Vector<DexComReading>();
-        for(String curString : InitActivity.result)
+        for(String curString : GraphActivity.result)
         {
             try
             {
