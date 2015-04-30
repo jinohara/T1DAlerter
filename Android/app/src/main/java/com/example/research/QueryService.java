@@ -69,8 +69,7 @@ public class QueryService extends IntentService {
             GraphActivity.last11.add(GraphActivity.result.get(i));
 
         }
-        GraphActivity.holdInfo = GraphActivity.methodObject.produceDataSets(MainActivity.LOW,
-                MainActivity.HIGH);
+        GraphActivity.holdInfo = GraphActivity.methodObject.produceDataSets();
         GraphActivity.SVMs = GraphActivity.methodObject.trainSVM(GraphActivity.holdInfo.sets.get(0),
                 GraphActivity.holdInfo.sets.get(1));
 
