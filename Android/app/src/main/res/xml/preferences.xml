@@ -34,4 +34,9 @@
         android:key="yoalerts"
         android:summary="Sends Yo alerts when blood glucose is predicted to be at dangerous levels."
         android:title="Yo Alerts" />
+    <EditTextPreference
+        android:defaultValue="https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a&amp;s={%22date%22:-1}"
+        android:key="apiurl"
+        android:summary="The API URL to read from. Include the full link with https://"
+        android:title="Mongo Lab API URL"></EditTextPreference>
 </PreferenceScreen>

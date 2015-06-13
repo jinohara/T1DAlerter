@@ -55,6 +55,7 @@ public class GraphActivity extends Activity {
     public static String PHONENUMBER;
     public static boolean TWILIOALERTS;
     public static boolean YOALERTS;
+    public static String mongoURL;
 
     /*
     MainActivity used to be the "base" class of the program, but due to the fact that it is easier
@@ -103,6 +104,7 @@ public class GraphActivity extends Activity {
         PHONENUMBER = sharedPrefs.getString("phonenumber", "1234567890");
         TWILIOALERTS = sharedPrefs.getBoolean("twilioalerts", false);
         YOALERTS = sharedPrefs.getBoolean("yoalerts", false);
+        mongoURL = sharedPrefs.getString("apiurl", "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a&s={%22date%22:-1}");
 
         // Set the size of the TextViews at the top.
         titleTextView = (TextView) findViewById(R.id.titleTextViewLayout);

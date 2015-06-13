@@ -1,4 +1,4 @@
-# T1Alerter - UI Update
+# T1DAlerter - UI Update
 
 New and improved!
 
