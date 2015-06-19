@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -111,7 +110,7 @@ public class GraphActivity extends Activity {
         titleTextView2 = (TextView) findViewById(R.id.titleTextViewLayout2);
         titleTextView.setTextSize(12);
         titleTextView2.setTextSize(20);
-        titleTextView2.setShadowLayer(1,0,0,Color.BLACK);
+        titleTextView2.setShadowLayer(1, 0, 0, Color.BLACK);
         titleTextView.setText("Blood Glucose Warning Level:");
 
 
@@ -183,14 +182,12 @@ public class GraphActivity extends Activity {
                 /*
                 For some reason, data[12] is a weird value which should be data[0].
                 Therefore, as a temporary fix, we will read data[1-11] and then read data[0].
+                Also, data[13] is supposedly the date (or something).
                 TODO: Properly fix program logic to output correct graphing data.
                  */
                 ArrayList<String> xValues = new ArrayList<String>();
                 ArrayList<Entry> yValues = new ArrayList<Entry>();
 
-                for (int i = 0; i < data.length; i++) {
-                    Log.d("Data Debug: ", Integer.toString(i) + ": " + Double.toString(data[i]));
-                }
                 // Add x-values
                 for (int i = 0; i < 13; i++) {
                     xValues.add((i) + "");
@@ -200,7 +197,9 @@ public class GraphActivity extends Activity {
                 for (int i = 1; i <= 11; i++) {
                     yValues.add(new Entry((float) data[i], i - 1));
                 }
+                // Add y-value from data[12]
                 yValues.add(new Entry((float) data[0], 12 - 1));
+
 
                 // Create a new data set (i.e. Y-values + Line properties)
                 LineDataSet ds1 = new LineDataSet(yValues, "");
