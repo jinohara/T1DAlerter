@@ -179,7 +179,9 @@ class SVMMethods
 
     double [] getDataSGV(Vector<String> last11, String mostRecent){
 
-
+        /*
+        TODO: Figure out why this is coded like this (why 1-11, then 0?)
+         */
         double [] sgv13 = new double[13];
         for(int i=0; i<11; ++i)
         {

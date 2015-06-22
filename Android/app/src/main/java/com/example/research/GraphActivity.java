@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -106,10 +107,13 @@ public class GraphActivity extends Activity {
         mongoURL = sharedPrefs.getString("apiurl", "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a&s={%22date%22:-1}");
 
         // Set the size of the TextViews at the top.
+        float textViewSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics());
+        float textViewSize2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+
         titleTextView = (TextView) findViewById(R.id.titleTextViewLayout);
         titleTextView2 = (TextView) findViewById(R.id.titleTextViewLayout2);
-        titleTextView.setTextSize(12);
-        titleTextView2.setTextSize(20);
+        titleTextView.setTextSize(textViewSize);
+        titleTextView2.setTextSize(textViewSize2);
         titleTextView2.setShadowLayer(1, 0, 0, Color.BLACK);
         titleTextView.setText("Blood Glucose Warning Level:");
 
@@ -204,7 +208,7 @@ public class GraphActivity extends Activity {
                 // Create a new data set (i.e. Y-values + Line properties)
                 LineDataSet ds1 = new LineDataSet(yValues, "");
                 ds1.enableDashedLine(10f, 5f, 0f);
-                ds1.setColor(Color.BLACK);
+                ds1.setColor(Color.RED);
                 ds1.setCircleColor(Color.BLACK);
                 ds1.setLineWidth(2f);
                 ds1.setCircleSize(5f);
