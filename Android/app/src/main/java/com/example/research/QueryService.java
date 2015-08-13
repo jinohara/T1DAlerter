@@ -68,8 +68,11 @@ public class QueryService extends IntentService {
 
             } catch (IOException e) {
                 Log.d("HTTP Error", Log.getStackTraceString(e));
-
+            } catch (NullPointerException e)
+            {
+                Log.d("QueryService Failure:", Log.getStackTraceString(e));
             }
+
         } else {
             // Network status is not OK, display error
             Log.d("Error", "Network not found!");
@@ -129,15 +132,6 @@ public class QueryService extends IntentService {
         } else
             // Graph data with Alert Value 0, or GREEN.
             GraphActivity.graph(data, 0);
-
-        //TODO: Fix the update bug (probably here)
-        //increment the last11
-        /*
-        for (int i = 10; i > 0; --i) {
-            GraphActivity.last11.set(i, GraphActivity.last11.get(i - 1));
-        }
-        GraphActivity.last11.set(0, (String) GraphActivity.result.get(0));
-        */
 
         //Trying out just directly displaying the last 11 instead of incrementing:
         for (int i = 0; i < GraphActivity.last11.size(); i++)

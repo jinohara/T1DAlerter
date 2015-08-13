@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
                 PHONENUMBER = phoneNumber.getText().toString();
                 vf.showNext();
             }
-        });
+        })
 
         lowNp = (NumberPicker) findViewById(R.id.lowNP);
         lowNp.setMaxValue(300);

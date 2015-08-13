@@ -30,6 +30,11 @@ import java.util.Vector;
 
 public class GraphActivity extends Activity {
 
+    /*
+        GraphActivity.result is an array with length 1001 (indexes 0-1000)
+        GraphActivity.last11 is an array with length 12 (indexes 0-11)
+        GraphActivity.SVMs contains 2 SVMs
+     */
     public static Vector<String> last11;
     public static Vector<Classifier> SVMs;
     public static SVMMethods methodObject;
@@ -107,8 +112,8 @@ public class GraphActivity extends Activity {
         mongoURL = sharedPrefs.getString("apiurl", "https://api.mongolab.com/api/1/databases/jcostik-nightscout/collections/entries?apiKey=CR4PAAj5PmApVtW6XKHTGp8sMkmug76a&s={%22date%22:-1}");
 
         // Set the size of the TextViews at the top.
-        float textViewSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, getResources().getDisplayMetrics());
-        float textViewSize2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+        float textViewSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+        float textViewSize2 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13, getResources().getDisplayMetrics());
 
         titleTextView = (TextView) findViewById(R.id.titleTextViewLayout);
         titleTextView2 = (TextView) findViewById(R.id.titleTextViewLayout2);
@@ -176,7 +181,7 @@ public class GraphActivity extends Activity {
     public static void graph(final double data[], final int alertVal) {
         runOnUI(new Runnable() {
             public void run() {
-
+                PredictionMethods.predict();
                 /*
                 Graph[] is passed an array of data[] and an alertVal integer.
                 The index of data[] (which is 13 long) is the X-axis variable,
@@ -187,7 +192,6 @@ public class GraphActivity extends Activity {
                 For some reason, data[12] is a weird value which should be data[0].
                 Therefore, as a temporary fix, we will read data[1-11] and then read data[0].
                 Also, data[13] is supposedly the date (or something).
-                TODO: Properly fix program logic to output correct graphing data.
                  */
                 ArrayList<String> xValues = new ArrayList<String>();
                 ArrayList<Entry> yValues = new ArrayList<Entry>();
@@ -241,22 +245,6 @@ public class GraphActivity extends Activity {
                     titleTextView2.setTextColor(Color.GREEN);
                 }
 
-                /*
-                Depreciated GraphView Code
-                PointsGraphSeries<DataPoint> series = new PointsGraphSeries<DataPoint>(displayvals);
-
-
-                graph.removeAllSeries();
-                graph.addSeries(series);
-
-                if (alertVal == 1)
-                    graph.getViewport().setBackgroundColor(Color.RED);
-                else if (alertVal == -1) {
-                    graph.getViewport().setBackgroundColor(Color.YELLOW);
-                } else {
-                    graph.getViewport().setBackgroundColor(Color.GREEN);
-                }
-                */
             }
         });
     }
